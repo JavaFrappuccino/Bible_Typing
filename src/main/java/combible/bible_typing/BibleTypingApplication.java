@@ -1,4 +1,4 @@
-package com.example.bible_typing;
+package combible.bible_typing;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
