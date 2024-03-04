@@ -1,4 +1,4 @@
-package com.bible.bible_typing;
+package com.bible.bible_typing.start;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
