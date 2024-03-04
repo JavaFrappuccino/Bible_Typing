@@ -11,4 +11,9 @@ public class MainController {
 		
 		return "index";
 	}
+	
+	@RequestMapping(value = "/join")
+	public String joinPage() {
+		return "join";
+	}
 }
