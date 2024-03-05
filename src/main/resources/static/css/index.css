@@ -3,7 +3,7 @@
 /* Variables */
 :root {
   --gray: #8E9AAF;
-  --lavender: #CBC0D3;
+  --lavender: #D6C9D6;
   --pale: #EAC7CC;
   --white: #f6f6f6;
 }
@@ -14,7 +14,7 @@
 }
 
 /* Fonts */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400|Lora');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400%7CLora');
 
 /* Font Families */
 :root {
@@ -58,6 +58,7 @@ body {
   box-shadow: 2px 0 10px rgba(0, 0, 0, .1);
   transition: all .5s ease-in-out;
   z-index: 2;
+  background-color: #F6E3CE;
 }
 
 /* Hide */
@@ -106,6 +107,9 @@ h1 {
 
 .desc {
   margin-top: -8px;
+  font-family: "Gaegu", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .account {
