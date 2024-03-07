@@ -14,7 +14,9 @@
 </head>
 <script>
 	$(function() {
-		console.log('hi');
+// 		$('#loginBtn').on('click', function() {
+// 			console.log('say hello');
+// 		});
 	});
 </script>
 <body>
@@ -33,13 +35,13 @@
 	      </div>
 	      <div class="signin">
 	        <h1>sign in</h1>
-	        <form class="more-padding" autocomplete="off">
-	          <input type="text" placeholder="username" style="background-color: #F6E3CE">
+	        <form class="more-padding" autocomplete="off" action="/loginAction" method="post">
+	          <input type="text" placeholder="userId" style="background-color: #F6E3CE" id="userId" name="userId">
 	          <input type="password" placeholder="password" style="background-color: #F6E3CE">
 	          <div class="checkbox">
 	            <input type="checkbox" id="remember" /><label for="remember">remember me</label>
 	          </div>
-	          <button class="button submit">login</button>
+	          <button class="button submit" id="loginBtn">login</button>
 	        </form>
 	      </div>
 	    </div>
