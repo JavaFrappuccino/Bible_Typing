@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bible.bible_typing.mapper.BibleMapper">
+    <insert id="insertBibleBatch">
+        INSERT INTO bible_verses (book_id, chapter, verse, content, verse_key)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bookId}, #{item.chapter}, #{item.verse}, #{item.content}, #{item.verseKey})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAllVerses">
+        DELETE FROM bible_verses
+    </delete>
+
+    <select id="findAllBookInfo" resultType="com.bible.bible_typing.dto.BibleInfoDto">
+        SELECT id, book_code_ko, book_code_en, book_name_ko, book_name_en, testament, book_order
+        FROM bible_info
+    </select>
+</mapper>
