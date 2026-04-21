@@ -44,7 +44,7 @@
 
         // 회원가입 성공 메시지 표시 (URL 파라미터 확인)
         var urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('join_success') === 'true') {
+        if (urlParams.get('signUp_success') === 'true') {
             alert('회원가입이 성공적으로 완료되었습니다. 로그인해주세요.');
             // URL에서 파라미터 제거 (선택 사항)
             history.replaceState({}, document.title, window.location.pathname);
@@ -67,7 +67,7 @@
                 <p style="color: #666; font-size: 0.9rem;">성경 말씀 타자 연습을 시작해볼까요?</p><br>
             </div>
 
-            <form action="/loginProc" method="post">
+            <form action="/api/user/loginProc" method="post">
                 <c:if test="${not empty loginError}">
                     <div style="color: #dc3545; text-align: center; margin-bottom: 15px; font-weight: bold;">
                         ${loginError}
@@ -93,7 +93,7 @@
             </form>
 
             <div style="margin-top: 25px; text-align: center; font-size: 0.9rem; color: #888;">
-                계정이 없으신가요? <a href="join" style="color: #0d6efd; text-decoration: none; font-weight: bold;">회원가입 시작하기</a>
+                계정이 없으신가요? <a href="signUp" style="color: #0d6efd; text-decoration: none; font-weight: bold;">회원가입 시작하기</a>
             </div>
         </div>
     </main>

@@ -13,8 +13,22 @@
         DELETE FROM bible_verses
     </delete>
 
-    <select id="findAllBookInfo" resultType="com.bible.bible_typing.dto.BibleInfoDto">
+    <!-- 외부 클래스에서 내부 클래스를 지정할 때는 .이 아니라 $를 사용해야함!!! -->
+    <select id="findAllBookInfo" resultType="com.bible.bible_typing.dto.BibleDto$BibleInfoDto">
         SELECT id, book_code_ko, book_code_en, book_name_ko, book_name_en, testament, book_order
         FROM bible_info
+    </select>
+
+    <!-- 단문 연습용 20개 데이터 호출 -->
+    <select id="getShortPractice" resultType="com.bible.bible_typing.dto.BibleDto$BibleShortPracticeDto">
+        SELECT b.book_name_ko
+             , b.book_code_ko
+             , a.chapter
+             , a.verse
+             , a.content
+        FROM bible_verses a
+                 JOIN bible_info b ON a.book_id = b.id
+        WHERE b.testament IN ('OLD', 'NEW')
+        ORDER BY rand() LIMIT 20
     </select>
 </mapper>

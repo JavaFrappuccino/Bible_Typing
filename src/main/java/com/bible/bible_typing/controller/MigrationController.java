@@ -3,6 +3,7 @@ package com.bible.bible_typing.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +13,10 @@ import com.bible.bible_typing.service.BibleMigrationService;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MigrationController {
 
-    @Autowired
-    private BibleMigrationService migrationService;
+    private final BibleMigrationService migrationService;
 
     @GetMapping("/migrate")
     public Map<String, Object> migrate() {

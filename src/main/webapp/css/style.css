@@ -11,7 +11,11 @@ header, .practice-header { background-color: #212529; color: white; padding: 12p
 .logo-text { font-size: 1.25rem; font-weight: bold; color: white; }
 
 .timer-bar { background-color: #343a40; color: #fff; padding: 10px 0; border-bottom: 2px solid #0d6efd; }
-.stat-item { font-size: 0.95rem; }
+.stat-item {
+    font-size: 0.95rem;
+    min-width: 120px; /* 최소 너비 지정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
 .stat-value { font-weight: bold; color: #74c0fc; margin-left: 5px; }
 
 /* 3. 공통 카드 및 컨테이너 */

@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.bible.bible_typing.dto.BibleInfoDto;
-import com.bible.bible_typing.dto.BibleVerseDto;
+import com.bible.bible_typing.dto.BibleDto;
 
 @Mapper
 public interface BibleMapper {
-	void insertBibleBatch(List<BibleVerseDto> list);
+	void insertBibleBatch(List<BibleDto.BibleVerseDto> list);
 	void deleteAllVerses();
-    List<BibleInfoDto> findAllBookInfo();
+    List<BibleDto.BibleInfoDto> findAllBookInfo();
+	List<BibleDto.BibleShortPracticeDto> getShortPractice();
 }

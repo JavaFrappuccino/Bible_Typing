@@ -22,6 +22,11 @@
             word-break: keep-all;
             min-height: 100px;
         }
+        /* 상단 정보 바 항목의 최소 너비 설정 */
+        .timer-bar .stat-item {
+            min-width: 150px; /* 각 항목이 최소한 이 너비를 가지도록 설정 */
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -38,10 +43,11 @@
 
     <div class="timer-bar">
         <div class="container d-flex justify-content-around">
-            <div class="stat-item">시간 <span id="timer" class="stat-value">00:00</span></div>
-            <div class="stat-item">현재타수 <span id="wpm" class="stat-value">0</span></div>
-            <div class="stat-item">정확도 <span id="acc" class="stat-value">100%</span></div>
-            <div class="stat-item">진행 <span id="progress" class="stat-value">1 / 10</span></div>
+            <div class="stat-item">현재 타수: <span id="wpm" class="stat-value">0</span></div>
+            <div class="stat-item">평균 타수: <span id="avgWpm" class="stat-value">0</span></div>
+            <div class="stat-item">진행률: <span id="progressText" class="stat-value">0/20</span></div>
+            <div class="stat-item">정확도: <span id="accuracy" class="stat-value">0%</span></div>
+            <div class="stat-item">소요시간: <span id="timer" class="stat-value">0초</span></div>
         </div>
     </div>
 
@@ -68,9 +74,7 @@
         // 타이머 시작
         setInterval(() => {
             seconds++;
-            let min = String(Math.floor(seconds / 60)).padStart(2, '0');
-            let sec = String(seconds % 60).padStart(2, '0');
-            timerElement.innerText = min + ":" + sec;
+            timerElement.innerText = seconds + "초";
         }, 1000);
 
         // 엔터 키 이벤트 (다음 구절 이동 시뮬레이션)

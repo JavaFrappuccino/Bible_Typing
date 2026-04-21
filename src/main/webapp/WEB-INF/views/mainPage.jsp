@@ -21,7 +21,7 @@
             <c:if test="${not empty sessionScope.loggedInUser}">
                 <div class="d-flex align-items-center gap-3">
                     <span class="text-white" style="font-size: 0.95rem;">
-                        <strong>${sessionScope.loggedInUser.userNm}</strong>님 환영합니다!
+                        <strong>${sessionScope.loggedInUser.userNic}</strong>님 환영합니다!
                     </span>
                     <a href="/logout" class="btn btn-outline-light btn-sm" style="border-radius: 20px;">로그아웃</a>
                 </div>

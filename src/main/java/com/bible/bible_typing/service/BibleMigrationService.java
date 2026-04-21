@@ -1,14 +1,12 @@
 package com.bible.bible_typing.service;
 
-import com.bible.bible_typing.dto.BibleInfoDto;
-import com.bible.bible_typing.dto.BibleVerseDto;
+import com.bible.bible_typing.dto.BibleDto;
 import com.bible.bible_typing.mapper.BibleMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -31,10 +29,10 @@ public class BibleMigrationService implements ApplicationListener<ApplicationRea
   @Override
   public void onApplicationEvent(ApplicationReadyEvent event) {
     // 애플리케이션이 완전히 준비된 후 DB에서 책 정보를 읽어와 Map에 저장
-    List<BibleInfoDto> allBooks = bibleMapper.findAllBookInfo();
+    List<BibleDto.BibleInfoDto> allBooks = bibleMapper.findAllBookInfo();
     this.bookCodeToIdMap =
         allBooks.stream()
-            .collect(Collectors.toMap(BibleInfoDto::getBookCodeKo, BibleInfoDto::getId));
+            .collect(Collectors.toMap(BibleDto.BibleInfoDto::getBookCodeKo, BibleDto.BibleInfoDto::getId));
     System.out.println("Bible info loaded. Total books: " + this.bookCodeToIdMap.size());
   }
 
@@ -49,7 +47,7 @@ public class BibleMigrationService implements ApplicationListener<ApplicationRea
     Map<String, String> rawData =
         mapper.readValue(resource.getInputStream(), new TypeReference<>() {});
 
-    List<BibleVerseDto> batchList = new ArrayList<>();
+    List<BibleDto.BibleVerseDto> batchList = new ArrayList<>();
 
     // 3. 데이터 파싱 및 DTO 생성
     for (Map.Entry<String, String> entry : rawData.entrySet()) {
@@ -93,7 +91,7 @@ public class BibleMigrationService implements ApplicationListener<ApplicationRea
         }
         int verse = Integer.parseInt(versePart);
 
-        BibleVerseDto dto = new BibleVerseDto();
+        BibleDto.BibleVerseDto dto = new BibleDto.BibleVerseDto();
         dto.setBookId(bookId);
         dto.setChapter(chapter);
         dto.setVerse(verse);

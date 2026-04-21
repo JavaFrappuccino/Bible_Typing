@@ -29,7 +29,7 @@ public class UserService {
      * @param userInfoDto 사용자 정보 DTO
      */
     @Transactional
-    public void join(UserInfoDto userInfoDto) {
+    public void signUp(UserInfoDto userInfoDto) {
         // 1. 필수 입력값 검증 (비밀번호 관련)
         if (!StringUtils.hasText(userInfoDto.getUserId())) {
             throw new IllegalArgumentException("아이디는 필수 입력값입니다.");

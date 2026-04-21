@@ -7,27 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
-
-    // 회원가입 페이지를 보여주는 메서드
-    @GetMapping("/join")
-    public String joinPage() {
-        return "join"; // "join.jsp" 파일을 렌더링
-    }
 
     // 아이디 중복 확인을 처리하는 메서드
     @PostMapping("/checkId")
@@ -39,10 +29,10 @@ public class UserController {
     }
 
     // 회원가입 폼 제출을 처리하는 메서드 (JSON 요청 처리)
-    @PostMapping("/joinProc")
+    @PostMapping("/signUpProc")
     @ResponseBody // JSON 응답을 위해 필요
-    public ResponseEntity<Map<String, Object>> joinProcess(@RequestBody UserInfoDto userInfoDto) {
-        userService.join(userInfoDto); // try-catch 제거, 예외 발생 시 밖으로 던짐
+    public ResponseEntity<Map<String, Object>> signUpProcess(@RequestBody UserInfoDto userInfoDto) {
+        userService.signUp(userInfoDto); // try-catch 제거, 예외 발생 시 밖으로 던짐
         return ResponseEntity.ok(Map.of("success", true, "message", "회원가입이 성공적으로 완료되었습니다."));
     }
 
@@ -63,32 +53,6 @@ public class UserController {
             redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 올바르지 않습니다.");
             return "redirect:/"; // index.jsp (로그인 페이지)
         }
-    }
-
-    // 메인 페이지를 보여주는 메서드
-    @GetMapping("/mainPage")
-    public String mainPage(HttpSession session) {
-        // 세션에 사용자 정보가 없으면 로그인 페이지로 리다이렉트 (선택 사항, 보안 강화)
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/";
-        }
-        return "mainPage"; // "mainPage.jsp" 파일을 렌더링
-    }
-
-    // 단문 연습 페이지를 보여주는 메서드
-    @GetMapping("/shortPractice")
-    public String shortPracticePage(HttpSession session) {
-        if (session.getAttribute("loggedInUser") == null) {
-            return "redirect:/";
-        }
-        return "shortPractice";
-    }
-
-    // 로그아웃 처리 메서드
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate(); // 세션 무효화
-        return "redirect:/"; // 로그인 페이지로 리다이렉트
     }
 
     // IllegalArgumentException 예외 처리 핸들러

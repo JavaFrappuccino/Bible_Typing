@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>BibleTyping - Join</title>
+    <title>BibleTyping - signUp</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -46,51 +46,83 @@
             });
         });
 
-        // 회원가입 버튼 클릭 이벤트
-        $("#joinBtn").click(function(e) {
+        // 회원가입 폼 제출 이벤트
+        $("#signUpForm").on("submit", function(e) {
+            e.preventDefault(); // 폼의 기본 제출 동작을 막음
+
             if (!idCheckFlag) {
                 alert('아이디 중복확인을 먼저 진행해주세요.');
-                return false;
+                return;
             }
             if ($('#user_pw').val().length === 0) {
                 alert('비밀번호를 입력해주세요.');
-                return false;
+                return;
             }
-            if ($('#passwordConfirm').val().length === 0) {
+            if ($('#password_confirm').val().length === 0) {
                 alert('비밀번호 확인을 입력해주세요.');
-                return false;
+                return;
             }
-            if ($('#user_pw').val() !== $('#passwordConfirm').val()) {
+            if ($('#user_pw').val() !== $('#password_confirm').val()) {
                 alert('비밀번호가 일치하지 않습니다.');
-                return false;
+                return;
             }
             if ($('#user_nm').val().length === 0) {
                 alert('이름을 입력해주세요.');
-                return false;
+                return;
             }
             if ($('#user_nic').val().length === 0) {
                 alert('닉네임을 입력해주세요.');
-                return false;
+                return;
             }
             if ($('#user_email').val().length === 0) {
                 alert('이메일을 입력해주세요.');
-                return false;
+                return;
             }
             var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
             if (!emailRegex.test($('#user_email').val())) {
                 alert('올바른 이메일 주소를 입력해주세요.');
-                return false;
+                return;
             }
             if ($('#user_birth').val().length === 0) {
                 alert('생년월일을 입력해주세요.');
-                return false;
+                return;
             }
             if ($('#user_phone').val().length === 0) {
                 alert('휴대폰 번호를 입력해주세요.');
-                return false;
+                return;
             }
+
+            var signUpData = {
+                user_id: $('#user_id').val(),
+                user_pw: $('#user_pw').val(),
+                password_confirm: $('#password_confirm').val(),
+                user_nm: $('#user_nm').val(),
+                user_nic: $('#user_nic').val(),
+                user_email: $('#user_email').val(),
+                user_birth: $('#user_birth').val(),
+                user_phone: $('#user_phone').val()
+            };
+
+            $.ajax({
+                url: '/api/user/signUpProc',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(signUpData),
+                success: function(response) {
+                    alert('회원가입이 완료되었습니다.');
+                    window.location.href = '/'; // 로그인 페이지로 리디렉션
+                },
+                error: function(xhr, status, error) {
+                    // 서버에서 보낸 에러 메시지를 표시 (가능한 경우)
+                    var errorMessage = "회원가입 중 오류가 발생했습니다.";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
         });
-    })
+    });
 </script>
 <body>
     <header>
@@ -108,7 +140,7 @@
                 <p style="color: #666; font-size: 0.9rem;">성경 말씀 타자 연습을 위한 계정을 만듭니다.</p><br>
             </div>
 
-            <form action="/api/user/joinProc" method="post">
+            <form id="signUpForm">
                 <div class="input-group">
                     <label for="user_id">사용자 아이디</label>
                     <div style="display: flex; align-items: center;">
@@ -124,7 +156,7 @@
 
                 <div class="input-group">
                     <label for="passwordConfirm">비밀번호 확인</label>
-                    <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="Password를 다시 한번 입력하세요" required>
+                    <input type="password" id="password_confirm" name="password_confirm" placeholder="Password를 다시 한번 입력하세요" required>
                 </div>
 
                 <div class="input-group">
@@ -152,7 +184,7 @@
                     <input type="text" id="user_phone" name="user_phone" placeholder="'-' 없이 숫자만 입력" maxlength="11" required>
                 </div>
 
-                <button type="submit" class="btn-main" id="joinBtn" style="width: 100%;">회원가입</button>
+                <button type="submit" class="btn-main" style="width: 100%;">회원가입</button>
             </form>
 
             <div style="margin-top: 25px; text-align: center; font-size: 0.9rem; color: #888;">
