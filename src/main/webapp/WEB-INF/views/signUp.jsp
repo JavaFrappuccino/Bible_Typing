@@ -26,7 +26,7 @@
             }
 
             $.ajax({
-                url: '/checkId', // 아이디 중복확인 요청 URL
+                url: '/api/user/checkId', // 아이디 중복확인 요청 URL
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ user_id: userId }),
@@ -108,7 +108,7 @@
                 <p style="color: #666; font-size: 0.9rem;">성경 말씀 타자 연습을 위한 계정을 만듭니다.</p><br>
             </div>
 
-            <form action="/joinProc" method="post">
+            <form action="/api/user/joinProc" method="post">
                 <div class="input-group">
                     <label for="user_id">사용자 아이디</label>
                     <div style="display: flex; align-items: center;">
