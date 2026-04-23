@@ -12,34 +12,70 @@
 <script>
     $(document).ready(function() {
         // 1. 페이지 로드 시 저장된 아이디 확인
-        var savedUsername = localStorage.getItem('savedUsername');
-        if (savedUsername) {
-            $('#username').val(savedUsername);
+        var savedUserId = localStorage.getItem('savedUserId');
+        if (savedUserId) {
+            $('#userId').val(savedUserId);
             $('#rememberId').prop('checked', true);
         }
 
+        // 엔터키 입력 시 로그인 버튼 클릭 이벤트 발생
+        $("#userId, #password").keypress(function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                $("#loginBtn").click();
+            }
+        });
+
         // 2. 로그인 버튼 클릭 시
         $("#loginBtn").click(function(e) {
-            var username = $('#username').val();
+            e.preventDefault(); // 기본 폼 전송 막기
+            var userId = $('#userId').val();
             var pw = $('#password').val();
             
-            if(username.length == 0) {
+            if(userId.length == 0) {
                 alert('아이디를 입력해주세요.');
+                $('#userId').focus();
                 return false;
             }
             if(pw.length == 0) {
                 alert('비밀번호를 입력해주세요.');
+                $('#password').focus();
                 return false;
             }
 
             // 3. 아이디 저장 체크박스 확인
             if ($('#rememberId').is(':checked')) {
                 // 체크되어 있으면 로컬 스토리지에 아이디 저장
-                localStorage.setItem('savedUsername', username);
+                localStorage.setItem('savedUserId', userId);
             } else {
                 // 체크 해제되어 있으면 로컬 스토리지에서 아이디 삭제
-                localStorage.removeItem('savedUsername');
+                localStorage.removeItem('savedUserId');
             }
+
+            // 4. JSON 형태로 데이터 전송 (AJAX)
+            var requestData = {
+                userId: userId,
+                password: pw
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/users/loginProc",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(requestData),
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = "/mainPage"; // 로그인 성공 시 이동
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        alert(xhr.responseJSON.message);
+                    } else {
+                        alert("로그인 중 오류가 발생했습니다.");
+                    }
+                }
+            });
         });
 
         // 회원가입 성공 메시지 표시 (URL 파라미터 확인)
@@ -67,7 +103,7 @@
                 <p style="color: #666; font-size: 0.9rem;">성경 말씀 타자 연습을 시작해볼까요?</p><br>
             </div>
 
-            <form action="/api/user/loginProc" method="post">
+            <form id="loginForm">
                 <c:if test="${not empty loginError}">
                     <div style="color: #dc3545; text-align: center; margin-bottom: 15px; font-weight: bold;">
                         ${loginError}
@@ -75,8 +111,8 @@
                 </c:if>
 
                 <div class="input-group">
-                    <label for="username">사용자 아이디</label>
-                    <input type="text" id="username" name="username" placeholder="ID를 입력하세요" required>
+                    <label for="userId">사용자 아이디</label>
+                    <input type="text" id="userId" name="userId" placeholder="ID를 입력하세요" required>
                 </div>
                 
                 <div class="input-group">
@@ -89,7 +125,7 @@
                     <label for="rememberId" style="margin-bottom: 0; font-size: 0.9rem; color: #666; cursor: pointer;">아이디 저장</label>
                 </div>
 
-                <button type="submit" class="btn-main" id="loginBtn" style="width: 100%;">로그인</button>
+                <button type="button" class="btn-main" id="loginBtn" style="width: 100%;">로그인</button>
             </form>
 
             <div style="margin-top: 25px; text-align: center; font-size: 0.9rem; color: #888;">

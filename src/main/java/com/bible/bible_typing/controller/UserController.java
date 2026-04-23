@@ -1,6 +1,7 @@
 package com.bible.bible_typing.controller;
 
 import com.bible.bible_typing.dto.UserInfoDto;
+import com.bible.bible_typing.dto.request.LoginRequest;
 import com.bible.bible_typing.service.UserService;
 import jakarta.servlet.http.HttpSession; // HttpSession 임포트 추가
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -38,20 +39,19 @@ public class UserController {
 
     // 로그인 폼 제출을 처리하는 메서드
     @PostMapping("/loginProc") // index.jsp의 form action과 일치
-    public String loginProcess(@RequestParam("username") String userId,
-                               @RequestParam("password") String password,
-                               HttpSession session, // HttpSession 추가
-                               RedirectAttributes redirectAttributes) {
-        UserInfoDto userInfo = userService.login(userId, password);
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> loginProcess(@RequestBody LoginRequest loginRequest,
+                               HttpSession session) {
+        UserInfoDto userInfo = userService.login(loginRequest.getUserId(), loginRequest.getPassword());
 
         if (userInfo != null) {
             // 로그인 성공 시, 사용자 정보를 세션에 저장
             session.setAttribute("loggedInUser", userInfo);
-            return "redirect:/mainPage"; // 메인 페이지로 리다이렉트
+            return ResponseEntity.ok(Map.of("success", true, "message", "로그인 성공"));
         } else {
-            // 로그인 실패 시, 로그인 페이지로 돌아가면서 에러 메시지 전달
-            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 올바르지 않습니다.");
-            return "redirect:/"; // index.jsp (로그인 페이지)
+            // 로그인 실패 시, 에러 메시지 전달
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "아이디 또는 비밀번호가 올바르지 않습니다."));
         }
     }
 
