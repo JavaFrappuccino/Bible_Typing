@@ -21,14 +21,17 @@
 
     <!-- 단문 연습용 20개 데이터 호출 -->
     <select id="getShortPractice" resultType="com.bible.bible_typing.dto.BibleDto$BibleShortPracticeDto">
-        SELECT b.book_name_ko
-             , b.book_code_ko
-             , a.chapter
-             , a.verse
-             , a.content
-        FROM bible_verses a
-                 JOIN bible_info b ON a.book_id = b.id
-        WHERE b.testament IN ('OLD', 'NEW')
-        ORDER BY rand() LIMIT 20
+        SELECT ROW_NUMBER() over () AS row_num
+            , temp.*
+        FROM (SELECT b.book_name_ko
+                   , b.book_code_ko
+                   , a.chapter
+                   , a.verse
+                   , a.content
+              FROM bible_verses a
+                       JOIN bible_info b ON a.book_id = b.id
+              WHERE b.testament IN ('OLD', 'NEW')
+              ORDER BY rand()
+                  LIMIT 20) temp
     </select>
 </mapper>

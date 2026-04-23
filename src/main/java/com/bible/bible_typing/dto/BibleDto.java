@@ -30,6 +30,7 @@ public class BibleDto {
 
     @Data
     public static class BibleShortPracticeDto {
+        private int rowNum;
         private String bookNameKo;
         private String bookCodeKo;
         private int chapter;
