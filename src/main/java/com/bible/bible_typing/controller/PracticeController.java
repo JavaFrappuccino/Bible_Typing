@@ -21,9 +21,7 @@ public class PracticeController {
 
     @GetMapping("/short-practice")
     public ApiResponse<List<ShortPracticeResponse>> getShortPractice() {
-
         List<ShortPracticeResponse> practiceList = practiceService.getShortPractice();
-
         return ApiResponse.success(practiceList);
     }
 

@@ -10,13 +10,23 @@ header, .practice-header { background-color: #212529; color: white; padding: 12p
 .logo-img { width: 35px; height: auto; vertical-align: middle; }
 .logo-text { font-size: 1.25rem; font-weight: bold; color: white; }
 
-.timer-bar { background-color: #343a40; color: #fff; padding: 10px 0; border-bottom: 2px solid #0d6efd; }
-.stat-item {
-    font-size: 0.95rem;
-    min-width: 120px; /* 최소 너비 지정 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+/* * Timer Bar 수정: JSP 내부 스타일과 병합
+ * 밝은 배경색(#f8f9fa)으로 통일하고 글자색을 어둡게 처리하여 가시성 확보
+ */
+.timer-bar {
+    background-color: #f8f9fa;
+    color: #212529;
+    padding: 12px 0;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
 }
-.stat-value { font-weight: bold; color: #74c0fc; margin-left: 5px; }
+.stat-item {
+    font-size: 1rem;
+    min-width: 150px;
+    text-align: center;
+    font-weight: bold;
+}
+.stat-value { font-weight: bold; margin-left: 5px; }
 
 /* 3. 공통 카드 및 컨테이너 */
 main { display: flex; justify-content: center; align-items: center; min-height: 85vh; padding: 20px; }
@@ -30,11 +40,10 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
 }
 
 /* 4. 버튼 (Buttons) */
-/* 메인 페이지의 시작 버튼들을 강제로 흰색 배경으로 통일 */
 .btn-main, .btn-start {
-    background-color: #ffffff !important; /* 항상 흰색 배경 */
-    color: #0d6efd !important;            /* 글자색 파란색 */
-    border: 2px solid #0d6efd !important; /* 테두리 파란색 */
+    background-color: #ffffff !important;
+    color: #0d6efd !important;
+    border: 2px solid #0d6efd !important;
     border-radius: 30px;
     padding: 12px 25px;
     font-weight: bold;
@@ -44,19 +53,17 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
     text-align: center;
 }
 
-/* 마우스를 올렸을 때만 파란색으로 반전 */
 .btn-main:hover, .btn-start:hover {
-    background-color: #0d6efd !important; /* 배경 파란색 */
-    color: #ffffff !important;            /* 글자색 흰색 */
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
     transform: translateY(-3px);
     box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
     text-decoration: none;
 }
 
-/* 보조 버튼 (중복확인 등) */
 .btn-sub {
-    background-color: #0d6efd; /* 파란색 배경 */
-    color: #ffffff;             /* 흰색 글씨 */
+    background-color: #0d6efd;
+    color: #ffffff;
     border: none;
     border-radius: 10px;
     padding: 12px 15px;
@@ -67,9 +74,8 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
 }
 
 .btn-sub:hover {
-    background-color: #0b5ed7; /* 더 진한 파란색 */
+    background-color: #0b5ed7;
 }
-
 
 /* 5. 입력 폼 (Forms) */
 .input-group { margin-bottom: 20px; }
@@ -83,7 +89,23 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
 }
 .input-group input:focus { border-color: #0d6efd; }
 
-/* 6. 장문 연습 페이지 전용 (Long Practice) */
+/* 6. 단문 연습 전용 (Short Practice - JSP에서 병합) */
+.short-practice-wrapper {
+    max-width: 800px;
+    margin: 60px auto 100px;
+    text-align: center;
+}
+
+.target-display {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #212529;
+    margin-bottom: 40px;
+    word-break: keep-all;
+    min-height: 100px;
+}
+
+/* 7. 장문 연습 페이지 전용 (Long Practice) */
 .long-practice-body { background-color: #ffffff !important; }
 .long-practice-wrapper { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
 
@@ -111,15 +133,14 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
     cursor: default;
 }
 
-/* 현재 입력 중인 줄 하이라이트 */
 .long-input.active {
-    background-color: #e2f5d8 !important; /* 이미지에서 본 연두색 */
+    background-color: #e2f5d8 !important;
     border-color: #82c91e !important;
     box-shadow: 0 0 8px rgba(130, 201, 30, 0.2);
     cursor: text;
 }
 
-/* 모달 내 주제 선택 버튼 호버 효과 */
+/* 8. 기타 모달 및 장 번호 선택 */
 .modal-body .btn-outline-primary {
     border: 2px solid #0d6efd;
     color: #0d6efd;
@@ -132,7 +153,6 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
     transform: scale(1.02);
 }
 
-/* 장 번호 그리드 (한 줄에 5개씩) */
 .chapter-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
