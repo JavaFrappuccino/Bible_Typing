@@ -1,6 +1,8 @@
 package com.bible.bible_typing.dto;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -28,6 +30,7 @@ public class BibleDto {
         private int bookOrder;
     }
 
+    // 단문 연습용 20개 데이터 호출
     @Data
     public static class BibleShortPracticeDto {
         private int rowNum;
@@ -36,5 +39,23 @@ public class BibleDto {
         private int chapter;
         private int verse;
         private String content;
+    }
+
+    // 단문 연습 후 데이터 저장
+    @Builder
+    @AllArgsConstructor
+    @Data
+    public static class BibleShortSaveDto {
+        private int speedIdx;
+        private int userIdx;
+        private String practiceType;
+        private String book_code_ko;
+        private String book_code_en;
+        private String title;
+        private int chapter;
+        private int speed;
+        private String testament;
+        private int accuracy;
+        private int duration;
     }
 }

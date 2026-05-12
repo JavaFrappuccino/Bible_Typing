@@ -34,4 +34,26 @@
               ORDER BY rand()
                   LIMIT 20) temp
     </select>
+
+    <insert id="saveShortPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleShortSaveDto">
+        INSERT INTO speed_his(
+                               user_idx
+                             , practice_type
+                             , speed
+                             , accuracy
+                             , duration
+                             , use_yn
+                             , ins_idx
+                             , ins_date
+        ) VALUES (
+                         #{userIdx}
+                      , #{practiceType}
+                      , #{speed}
+                      , #{accuracy}
+                      , #{duration}
+                      , 'Y'
+                      , #{userIdx}
+                      , NOW()
+                         )
+    </insert>
 </mapper>

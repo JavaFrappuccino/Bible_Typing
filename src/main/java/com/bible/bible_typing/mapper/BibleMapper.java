@@ -12,4 +12,5 @@ public interface BibleMapper {
 	void deleteAllVerses();
     List<BibleDto.BibleInfoDto> findAllBookInfo();
 	List<BibleDto.BibleShortPracticeDto> getShortPractice();
+	void saveShortPracticeHistory(BibleDto.BibleShortSaveDto bibleShortSaveDto);
 }
