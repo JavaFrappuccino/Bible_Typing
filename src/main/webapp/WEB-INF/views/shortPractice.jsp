@@ -92,7 +92,7 @@
 <body>
 
 <header class="practice-header">
-    <div class="container-fluid px-4 d-flex justify-content-between align-items-center mt-3 mb-3">
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
         <div class="navbar-brand-group d-flex align-items-center">
             <img src="/images/bible3.png" class="logo-img me-2" alt="Logo" style="height: 30px;">
             <span class="logo-text fs-4 fw-bold">BibleTyping - 단문 연습</span>
@@ -129,7 +129,7 @@
 
 <main class="container">
     <div class="short-practice-wrapper">
-        <div id="bibleReference" class="text-center fw-bold text-secondary mb-3 fs-5" style="letter-spacing: 1px;">
+        <div id="bibleReference" class="text-center fw-bold text-secondary fs-5" style="letter-spacing: 1px;">
             로딩 중...
         </div>
 
@@ -153,20 +153,18 @@
 <!-- 결과창 모달 오버레이 -->
 <div id="resultModalOverlay">
     <div class="result-card text-center">
-        <!-- 닉네임 불러오기 -->
         <h3 class="fw-bold mb-2">
             <span style="color: #0d6efd;">${not empty sessionScope.loggedInUser ? sessionScope.loggedInUser.userNic : '회원'}</span>님 수고하셨습니다!
         </h3>
-        <p class="text-muted mb-3 small">20개의 단문 연습을 모두 완료했습니다.</p>
+        <!-- 완료 문구를 동적으로 변경하기 위해 id 추가 -->
+        <p class="text-muted mb-3 small" id="modalCompletionText">20개의 단문 연습을 모두 완료했습니다.</p>
 
-        <!-- 소요 시간 뱃지 형태 배치 -->
         <div class="d-inline-block px-4 py-2 mb-4" style="background-color: #f8f9fa; border-radius: 30px; border: 1px solid #e9ecef;">
             <span class="text-muted small fw-bold me-2">총 소요 시간</span>
             <span class="fw-bold" style="color: #0fbcf9; font-size: 1.15rem;" id="modalTotalTime">0분 0초</span>
         </div>
 
         <div class="text-start mt-2">
-            <!-- 1. 평균 타수 (초록색 톤) -->
             <div class="stat-label-group">
                 <span class="stat-title">평균 타수</span>
                 <span class="stat-score" style="color: #0be881;" id="modalAvgWpm">0 타</span>
@@ -175,7 +173,6 @@
                 <div class="neon-bar neon-green" id="modalAvgWpmBar" data-width="0%"></div>
             </div>
 
-            <!-- 2. 총 정확도 (실버/흰색 톤) -->
             <div class="stat-label-group">
                 <span class="stat-title">총 정확도</span>
                 <span class="stat-score" style="color: #636e72;" id="modalTotalAcc">0 %</span>
@@ -184,7 +181,6 @@
                 <div class="neon-bar neon-silver" id="modalTotalAccBar" data-width="0%"></div>
             </div>
 
-            <!-- 3. 최고 타수 (주황색 톤) -->
             <div class="stat-label-group">
                 <span class="stat-title">최고 타수</span>
                 <span class="stat-score" style="color: #ff9f43;" id="modalMaxWpm">0 타</span>
@@ -202,26 +198,26 @@
 </div>
 
 <script>
+    let isSaving = false;
     let seconds = 0;
-    let currentProgress = 0;
+    let currentProgress = 0;   // 현재 시도 중인 문제 번호 (0~19)
+    let completedCount = 0;    // 실제로 끝까지 친 문제 개수
     const totalSentences = 20;
 
     let versesList = [];
-
-    // 타수 및 정확도 계산 관련 변수
     let sentenceStartTime = 0;
     let isTyping = false;
 
-    // 누적 데이터 (총 정확도, 평균 타수, 최고 타수 계산용)
-    let globalCorrectCount = 0; // 완료된 문장들의 맞은 글자 수 합
-    let globalTypedCount = 0;   // 완료된 문장들의 총 친 글자 수 합
-    let globalTotalStrokes = 0; // 완료된 문장들의 총 타수 합
-    let globalTotalSeconds = 0; // 완료된 문장들의 총 소요 시간 합
-    let maxWpm = 0;             // 최고 타수 기록용
+    let globalCorrectCount = 0;
+    let globalTypedCount = 0;
+    let globalTotalStrokes = 0;
+    let globalTotalSeconds = 0;
+    let maxWpm = 0;
 
-    // 부드러운 타수 변화를 위한 애니메이션 변수
     let targetWpm = 0;
     let displayedWpm = 0;
+    let targetSentence = "";
+    let targetReference = "";
 
     const timerElement = document.getElementById('timer');
     const inputElement = document.getElementById('typeInput');
@@ -258,44 +254,35 @@
 
     function updateWPM() {
         if (!isTyping || sentenceStartTime === 0) return;
-
         const typedText = inputElement.value;
         const strokes = getStrokeCount(typedText);
-
         const elapsedSeconds = Math.max((Date.now() - sentenceStartTime) / 1000, 1);
         const elapsedMinutes = elapsedSeconds / 60;
-
         if (elapsedMinutes > 0 && strokes > 0) {
             targetWpm = Math.round(strokes / elapsedMinutes);
         }
     }
 
-    // 실시간 정확도 업데이트 함수
     function updateAccuracy() {
         if (!targetSentence) return;
-
         const typed = inputElement.value;
         let currentCorrect = 0;
         let currentTyped = typed.length;
-
         for (let i = 0; i < currentTyped; i++) {
             if (i < targetSentence.length && typed[i] === targetSentence[i]) {
                 currentCorrect++;
             }
         }
-
         let currentAcc = 100;
         if (currentTyped > 0) {
             currentAcc = Math.round((currentCorrect / currentTyped) * 100);
         }
-
         currentAccuracyElement.innerText = currentAcc + "%";
     }
 
     setInterval(() => {
         if (Math.round(displayedWpm) !== targetWpm) {
             displayedWpm += (targetWpm - displayedWpm) * 0.1;
-
             if (Math.abs(targetWpm - displayedWpm) < 0.5) {
                 displayedWpm = targetWpm;
             }
@@ -305,24 +292,17 @@
 
     function setSentence(index) {
         if (index >= versesList.length) return;
-
         const data = versesList[index];
-
         targetSentence = data.content;
         targetReference = data.bookNameKo + ' ' + data.chapter + '장 ' + data.verse + '절';
-
         referenceElement.innerText = targetReference;
-
-        targetWpm = Math.round(displayedWpm);
-        displayedWpm = targetWpm;
-
+        targetWpm = 0; // 문장 변경 시 현재 타수 초기화
+        displayedWpm = 0;
         sentenceStartTime = 0;
         isTyping = false;
-
         inputElement.readOnly = false;
         inputElement.value = "";
         inputElement.focus();
-
         updateDisplay();
         updateAccuracy();
     }
@@ -337,26 +317,18 @@
 
     function updateDisplay() {
         if (!targetSentence) return;
-
         const typed = inputElement.value;
         let html = '';
-
         let targetIdx = 0;
         let typedIdx = 0;
         let hasCursor = false;
 
         while (typedIdx < typed.length && targetIdx < targetSentence.length) {
             let isLast = (typedIdx === typed.length - 1);
-
             if (typed[typedIdx] === targetSentence[targetIdx]) {
                 html += '<span class="text-dark">' + targetSentence[targetIdx] + '</span>';
             } else {
-                let char = typed[typedIdx];
-
-                if (char === ' ') {
-                    char = targetSentence[targetIdx];
-                }
-
+                let char = typed[typedIdx] === ' ' ? targetSentence[targetIdx] : typed[typedIdx];
                 if (isLast) {
                     html += '<span class="text-danger" style="background-color: #f8d7da; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px;">' + char + '</span>';
                     hasCursor = true;
@@ -364,15 +336,12 @@
                     html += '<span class="text-danger" style="background-color: #f8d7da;">' + char + '</span>';
                 }
             }
-
             targetIdx++;
             typedIdx++;
         }
-
         while (typedIdx < typed.length) {
             const char = typed[typedIdx];
             let isLast = (typedIdx === typed.length - 1);
-
             if (isLast) {
                 html += '<span class="text-danger" style="background-color: #f8d7da; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px;">' + char + '</span>';
                 hasCursor = true;
@@ -381,7 +350,6 @@
             }
             typedIdx++;
         }
-
         if (targetIdx < targetSentence.length) {
             const char = targetSentence[targetIdx];
             if (!hasCursor) {
@@ -391,13 +359,11 @@
             }
             targetIdx++;
         }
-
         while (targetIdx < targetSentence.length) {
             const char = targetSentence[targetIdx];
             html += '<span style="color: #adb5bd;">' + char + '</span>';
             targetIdx++;
         }
-
         fakeDisplay.innerHTML = html;
     }
 
@@ -406,33 +372,29 @@
             sentenceStartTime = Date.now();
             isTyping = true;
         }
-
         updateDisplay();
         updateWPM();
         updateAccuracy();
     });
 
-    // 결과창 모달 띄우기 함수 (실제 데이터 세팅 포함)
     function showResultModal() {
         const modal = document.getElementById('resultModalOverlay');
-
-        // 1. 총 소요 시간 세팅 (분/초 계산)
         const min = Math.floor(seconds / 60);
         const sec = seconds % 60;
         const timeStr = min > 0 ? min + "분 " + sec + "초" : sec + "초";
         document.getElementById('modalTotalTime').innerText = timeStr;
 
-        // 2. 평균 타수 세팅
+        // 완료 개수 표시 업데이트
+        document.getElementById('modalCompletionText').innerText = completedCount + "개의 단문 연습을 완료했습니다.";
+
         let avgWpm = 0;
         if (globalTotalSeconds > 0) {
             avgWpm = Math.round(globalTotalStrokes / (globalTotalSeconds / 60));
         }
         document.getElementById('modalAvgWpm').innerText = avgWpm + " 타";
-        // 너비 비율 계산 (최대 1000타를 100%로 잡고 계산)
         let avgWpmWidth = Math.min((avgWpm / 1000) * 100, 100);
         document.getElementById('modalAvgWpmBar').setAttribute('data-width', avgWpmWidth + "%");
 
-        // 3. 총 정확도 세팅
         let totalAcc = 100;
         if (globalTypedCount > 0) {
             totalAcc = Math.round((globalCorrectCount / globalTypedCount) * 100);
@@ -440,15 +402,11 @@
         document.getElementById('modalTotalAcc').innerText = totalAcc + " %";
         document.getElementById('modalTotalAccBar').setAttribute('data-width', totalAcc + "%");
 
-        // 4. 최고 타수 세팅
         document.getElementById('modalMaxWpm').innerText = maxWpm + " 타";
         let maxWpmWidth = Math.min((maxWpm / 1000) * 100, 100);
         document.getElementById('modalMaxWpmBar').setAttribute('data-width', maxWpmWidth + "%");
 
-        // 모달 표시
         modal.classList.add('show');
-
-        // 프로그레스 바 애니메이션 실행 (약간의 딜레이 후 채워지도록)
         const bars = document.querySelectorAll('.neon-bar');
         setTimeout(() => {
             bars.forEach(bar => {
@@ -464,14 +422,17 @@
 
         if (isEnter || isSpaceAtEnd) {
             e.preventDefault();
+            if (isSaving) return;
 
             this.readOnly = true;
-
-            // --- 문장 완료 시 정확도 및 평균/최고 타수 글로벌 데이터 누적 ---
             const typed = inputElement.value;
-            let finalSentenceWpm = targetWpm;
 
-            if (typed.length >= targetSentence.length) {
+            // --- [수정] 실제로 끝까지 입력했는지 확인 ---
+            const isFinished = typed.length >= targetSentence.length;
+
+            if (isFinished) {
+                completedCount++; // 실제 완료 개수 증가
+
                 let currentCorrect = 0;
                 for (let i = 0; i < typed.length; i++) {
                     if (i < targetSentence.length && typed[i] === targetSentence[i]) {
@@ -486,42 +447,65 @@
                 globalTotalStrokes += strokes;
                 globalTotalSeconds += elapsedSeconds;
 
-                finalSentenceWpm = Math.round(strokes / (elapsedSeconds / 60));
+                let finalSentenceWpm = Math.round(strokes / (elapsedSeconds / 60));
+                if (finalSentenceWpm > maxWpm) maxWpm = finalSentenceWpm;
 
-                // 최고 타수(maxWpm) 갱신
-                if (finalSentenceWpm > maxWpm) {
-                    maxWpm = finalSentenceWpm;
-                }
-            }
+                // 통계 업데이트
+                let totalAcc = globalTypedCount > 0 ? Math.round((globalCorrectCount / globalTypedCount) * 100) : 100;
+                totalAccuracyElement.innerText = totalAcc + "%";
 
-            let totalAcc = 100;
-            if (globalTypedCount > 0) {
-                totalAcc = Math.round((globalCorrectCount / globalTypedCount) * 100);
-            }
-            totalAccuracyElement.innerText = totalAcc + "%";
+                let avgWpm = globalTotalSeconds > 0 ? Math.round(globalTotalStrokes / (globalTotalSeconds / 60)) : 0;
+                avgWpmElement.innerText = avgWpm;
 
-            let avgWpm = 0;
-            if (globalTotalSeconds > 0) {
-                avgWpm = Math.round(globalTotalStrokes / (globalTotalSeconds / 60));
+                targetWpm = finalSentenceWpm;
+                displayedWpm = targetWpm;
+                wpmElement.innerText = targetWpm;
             }
-            avgWpmElement.innerText = avgWpm;
-            // ---------------------------------------------------
 
             isTyping = false;
-            targetWpm = finalSentenceWpm;
-            displayedWpm = targetWpm;
-            wpmElement.innerText = targetWpm;
+            currentProgress++; // 시도 횟수(진행도)는 무조건 증가
 
-            currentProgress++;
             let percentage = (currentProgress / totalSentences) * 100;
-
             progressBar.style.width = percentage + '%';
             progressBar.setAttribute('aria-valuenow', currentProgress);
             progressTextDisplay.innerText = currentProgress + ' / ' + totalSentences;
 
-            // 20개가 끝나면 기존 alert 대신 새로운 모달을 띄웁니다!
             if (currentProgress >= totalSentences) {
-                showResultModal();
+                // --- [수정] 완료한 개수가 0개이면 저장하지 않음 ---
+                if (completedCount === 0) {
+                    isSaving = true; // 중복 방지
+                    fakeDisplay.innerText = "완료된 문장이 없어 기록을 저장하지 않습니다.";
+                    setTimeout(() => {
+                        showResultModal();
+                    }, 1000);
+                    return;
+                }
+
+                isSaving = true;
+                let finalAvgWpm = globalTotalSeconds > 0 ? Math.round(globalTotalStrokes / (globalTotalSeconds / 60)) : 0;
+                let finalTotalAcc = globalTypedCount > 0 ? Math.round((globalCorrectCount / globalTypedCount) * 100) : 100;
+
+                const recordData = {
+                    practiceType: 'short',
+                    speed: finalAvgWpm,
+                    accuracy: finalTotalAcc,
+                    duration: seconds
+                };
+
+                fetch('/api/verses/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(recordData)
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log('기록 저장 성공:', data);
+                        showResultModal();
+                    })
+                    .catch(error => {
+                        console.error('기록 저장 에러:', error);
+                        showResultModal();
+                    });
                 return;
             }
 
@@ -533,31 +517,16 @@
 
     window.onload = function() {
         fetch('/api/verses/short-practice')
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error("서버 응답 상태가 정상이 아닙니다: " + res.status);
-                }
-                return res.json();
-            })
+            .then(res => res.ok ? res.json() : Promise.reject())
             .then(response => {
+                if (Array.isArray(response)) versesList = response;
+                else if (response.data) versesList = response.data;
 
-                if (Array.isArray(response)) {
-                    versesList = response;
-                } else if (response.success && response.data) {
-                    versesList = response.data;
-                } else if (response.data && Array.isArray(response.data)) {
-                    versesList = response.data;
-                }
-
-                if (versesList && versesList.length > 0) {
-                    setSentence(0);
-                } else {
-                    fakeDisplay.innerText = "가져온 말씀 데이터가 없습니다.";
-                }
+                if (versesList && versesList.length > 0) setSentence(0);
+                else fakeDisplay.innerText = "가져온 말씀 데이터가 없습니다.";
             })
             .catch(err => {
-                console.error("데이터 로드 오류:", err);
-                fakeDisplay.innerText = "서버와 통신할 수 없거나 데이터 형식이 맞지 않습니다.";
+                fakeDisplay.innerText = "서버와 통신할 수 없습니다.";
             });
     };
 </script>

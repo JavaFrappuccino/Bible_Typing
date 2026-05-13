@@ -4,32 +4,90 @@ body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
 a { text-decoration: none; color: inherit; transition: 0.2s; }
 a:hover { text-decoration: underline; }
 
-/* 2. 헤더 & 상단 바 (Header & Navigation) */
-header, .practice-header { background-color: #212529; color: white; padding: 12px 0; }
-.navbar-brand-group { display: flex; align-items: center; gap: 10px; }
-.logo-img { width: 35px; height: auto; vertical-align: middle; }
-.logo-text { font-size: 1.25rem; font-weight: bold; color: white; }
+/* 2. 헤더 & 상단 바 (Header) */
+header, .practice-header {
+    background-color: #212529;
+    color: white;
+    padding: 0 !important;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
 
-/* * Timer Bar 수정: JSP 내부 스타일과 병합
- * 밝은 배경색(#f8f9fa)으로 통일하고 글자색을 어둡게 처리하여 가시성 확보
- */
+header .container-fluid, .practice-header .container-fluid {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* 로고 텍스트 크기 통일 (fs-5 수준) */
+.logo-text {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: white !important;
+    line-height: 1;
+}
+
+/* 헤더 우측 사용자 정보 텍스트 크기 통일 */
+header .container-fluid span:not(.logo-text),
+.practice-header .container-fluid span:not(.logo-text) {
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+}
+
+/* 헤더 우측 버튼(로그아웃/그만하기) 크기 통일 */
+header .btn-light, .practice-header .btn-light {
+    font-size: 0.8rem !important;
+    padding: 5px 15px !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* 3. 타이머 바 & 스탯 (Timer Bar) */
 .timer-bar {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     color: #212529;
-    padding: 12px 0;
-    border-top: 1px solid #dee2e6;
+    padding: 15px 0;
     border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 .stat-item {
-    font-size: 1rem;
-    min-width: 150px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #495057;
+    min-width: 140px;
     text-align: center;
-    font-weight: bold;
 }
-.stat-value { font-weight: bold; margin-left: 5px; }
+.stat-value { font-weight: 800; margin-left: 5px; }
 
-/* 3. 공통 카드 및 컨테이너 */
-main { display: flex; justify-content: center; align-items: center; min-height: 85vh; padding: 20px; }
+/* 4. 대시보드 전용 레이아웃 (Dashboard) */
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
 
 .card-common {
     background: white;
@@ -39,8 +97,8 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
     padding: 40px;
 }
 
-/* 4. 버튼 (Buttons) */
-.btn-main, .btn-start {
+/* 5. 버튼 (Buttons) */
+.btn-start {
     background-color: #ffffff !important;
     color: #0d6efd !important;
     border: 2px solid #0d6efd !important;
@@ -51,131 +109,90 @@ main { display: flex; justify-content: center; align-items: center; min-height: 
     transition: all 0.3s ease;
     display: inline-block;
     text-align: center;
+    text-decoration: none;
 }
-
-.btn-main:hover, .btn-start:hover {
+.btn-start:hover {
     background-color: #0d6efd !important;
-    color: #ffffff !important;
     transform: translateY(-3px);
     box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
-    text-decoration: none;
 }
 
-.btn-sub {
-    background-color: #0d6efd;
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 15px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
+/* 6. 모달 및 성경 선택 (Modal & Testament) */
+.modal-content { border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
 
-.btn-sub:hover {
-    background-color: #0b5ed7;
-}
-
-/* 5. 입력 폼 (Forms) */
-.input-group { margin-bottom: 20px; }
-.input-group label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 8px; }
-.input-group input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ced4da;
-    border-radius: 10px;
-    outline: none;
-}
-.input-group input:focus { border-color: #0d6efd; }
-
-/* 6. 단문 연습 전용 (Short Practice - JSP에서 병합) */
-.short-practice-wrapper {
-    max-width: 800px;
-    margin: 60px auto 100px;
-    text-align: center;
-}
-
-.target-display {
-    font-size: 2rem;
-    font-weight: 500;
-    color: #212529;
-    margin-bottom: 40px;
-    word-break: keep-all;
-    min-height: 100px;
-}
-
-/* 7. 장문 연습 페이지 전용 (Long Practice) */
-.long-practice-body { background-color: #ffffff !important; }
-.long-practice-wrapper { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-
-.long-practice-box {
-    background-color: #f1f3f5 !important;
-    border-radius: 12px;
-    padding: 30px;
-    border: 1px solid #dee2e6;
+.testament-btn {
+    height: 140px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+.old-testament-btn { background-color: #fff5f5; color: #c92a2a; border-color: #ffc9c9; }
+.old-testament-btn:hover { background-color: #ffe3e3; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(201, 42, 42, 0.15); }
 
-.sentence-display { font-size: 1.2rem; color: #495057; margin-bottom: 8px; font-weight: 500; }
+.new-testament-btn { background-color: #f4fce3; color: #2b8a3e; border-color: #d8f5a2; }
+.new-testament-btn:hover { background-color: #ebf7d4; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(43, 138, 62, 0.15); }
 
-.long-input {
-    width: 100% !important;
-    padding: 12px 15px !important;
-    font-size: 1.1rem !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 8px !important;
-    background-color: #e9ecef;
-    outline: none !important;
-    box-sizing: border-box;
-    cursor: default;
-}
+.testament-icon { font-size: 2.8rem; margin-bottom: 8px; }
+.testament-label { font-size: 1.2rem; font-weight: 800; }
 
-.long-input.active {
-    background-color: #e2f5d8 !important;
-    border-color: #82c91e !important;
-    box-shadow: 0 0 8px rgba(130, 201, 30, 0.2);
-    cursor: text;
-}
-
-/* 8. 기타 모달 및 장 번호 선택 */
-.modal-body .btn-outline-primary {
-    border: 2px solid #0d6efd;
-    color: #0d6efd;
-    transition: 0.3s;
-}
-
-.modal-body .btn-outline-primary:hover {
-    background-color: #0d6efd;
-    color: #fff;
-    transform: scale(1.02);
-}
-
-.chapter-grid {
+.bible-grid, .chapter-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
-    padding: 15px !important;
-    border-radius: 12px;
-    margin-bottom: 10px;
+    padding: 10px 0;
+    grid-template-columns: repeat(3, 1fr);
 }
 
-.chapter-link {
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 8px 0;
-    font-size: 0.9rem;
-    color: #495057;
+.grid-item {
+    padding: 10px 4px;
     text-align: center;
-    transition: 0.2s;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    border: 1px solid transparent;
 }
 
-.chapter-link:hover {
-    background-color: #0d6efd;
-    color: #fff;
-    text-decoration: none;
-    transform: scale(1.05);
+.old-theme .grid-item { background-color: #fff5f5; color: #c92a2a; border-color: #ffc9c9; }
+.old-theme .grid-item:hover { background-color: #c92a2a; color: #fff; border-color: #c92a2a; transform: translateY(-2px); }
+
+.new-theme .grid-item { background-color: #f4fce3; color: #2b8a3e; border-color: #d8f5a2; }
+.new-theme .grid-item:hover { background-color: #2b8a3e; color: #fff; border-color: #2b8a3e; transform: translateY(-2px); }
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+    width: fit-content;
+}
+.btn-back:hover { background-color: #f1f3f5; color: #333; border-color: #ddd; }
+.btn-back svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 4px; fill: none; }
+
+/* 7. 단문 연습 페이지 전용 (Short Practice) */
+.short-practice-wrapper {
+    max-width: 800px;
+    margin: 150px auto 120px;
+    text-align: center;
+    padding: 0 20px;
 }
