@@ -87,6 +87,24 @@
         }
         .stat-title { font-weight: 700; color: #495057; font-size: 0.95rem; }
         .stat-score { font-weight: 900; font-size: 1.1rem; }
+
+        /* 프로그레스 바 아래 컨텐츠의 여백을 적절히 조정 */
+        .short-practice-wrapper {
+            padding-top: 75px;
+            padding-bottom: 100px;
+            text-align: center;
+        }
+
+        #fakeDisplay {
+            margin-top: 20px; /* 구절 정보와 입력창 사이 여백 */
+        }
+
+        /* 결과창 내 아이콘 스타일 */
+        .modal-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +147,7 @@
 
 <main class="container">
     <div class="short-practice-wrapper">
-        <div id="bibleReference" class="text-center fw-bold text-secondary fs-5" style="letter-spacing: 1px;">
+        <div id="bibleReference" class="text-center fw-bold text-secondary fs-5 mb-3" style="letter-spacing: 1px;">
             로딩 중...
         </div>
 
@@ -137,14 +155,16 @@
             <input type="text" id="typeInput" class="position-absolute w-100 h-100"
                    autofocus autocomplete="off" style="opacity: 0; z-index: 2; top: 0; left: 0;" readonly>
 
+            <!-- 연속 오타가 가로 폭을 뚫지 않도록 word-break를 break-all로 최적화 적용 -->
             <div id="fakeDisplay" class="text-center"
-                 style="font-size: 2rem; font-weight: 600; line-height: 1.6; min-height: 160px; color: #ced4da; white-space: pre-wrap; word-break: keep-all; padding: 40px 20px; border-radius: 15px; background-color: #f8f9fa; border: 2px dashed #dee2e6; user-select: none;">
+                 style="font-size: 2rem; font-weight: 600; line-height: 1.6; min-height: 160px; color: #ced4da; white-space: pre-wrap; word-break: break-all; padding: 40px 20px; border-radius: 15px; background-color: #f8f9fa; border: 2px dashed #dee2e6; user-select: none;">
                 데이터를 불러오는 중입니다...
             </div>
         </div>
 
-        <div class="mt-4 text-muted small">
-            <p class="mb-1">문장을 끝까지 입력한 후 Space 또는 Enter를 누르면 다음으로 넘어갑니다.</p>
+        <!-- 스페이스(완성 후 넘어가기)와 엔터(스킵하고 바로 넘어가기) 역할을 명확하게 구분한 안내 문구 적용 -->
+        <div class="mt-4 text-muted small text-center">
+            <p class="mb-1">문장을 끝까지 입력한 후 <span class="fw-bold text-primary">Space</span>를 누르거나, 입력 없이 바로 넘어가려면 <span class="fw-bold text-success">Enter</span>를 누르세요.</p>
             <p class="mb-0">말씀에 오타나 문제가 있을 시 tsk8520@naver.com으로 문의해주세요.</p>
         </div>
     </div>
@@ -153,41 +173,50 @@
 <!-- 결과창 모달 오버레이 -->
 <div id="resultModalOverlay">
     <div class="result-card text-center">
-        <h3 class="fw-bold mb-2">
+        <span id="modalIcon" class="modal-icon">🎉</span>
+        <h3 class="fw-bold mb-2" id="modalTitle">
             <span style="color: #0d6efd;">${not empty sessionScope.loggedInUser ? sessionScope.loggedInUser.userNic : '회원'}</span>님 수고하셨습니다!
         </h3>
-        <!-- 완료 문구를 동적으로 변경하기 위해 id 추가 -->
         <p class="text-muted mb-3 small" id="modalCompletionText">20개의 단문 연습을 모두 완료했습니다.</p>
 
-        <div class="d-inline-block px-4 py-2 mb-4" style="background-color: #f8f9fa; border-radius: 30px; border: 1px solid #e9ecef;">
-            <span class="text-muted small fw-bold me-2">총 소요 시간</span>
-            <span class="fw-bold" style="color: #0fbcf9; font-size: 1.15rem;" id="modalTotalTime">0분 0초</span>
+        <!-- 통계 영역 -->
+        <div id="modalStatsSection">
+            <div class="d-inline-block px-4 py-2 mb-4" style="background-color: #f8f9fa; border-radius: 30px; border: 1px solid #e9ecef;">
+                <span class="text-muted small fw-bold me-2">총 소요 시간</span>
+                <span class="fw-bold" style="color: #0fbcf9; font-size: 1.15rem;" id="modalTotalTime">0분 0초</span>
+            </div>
+
+            <div class="text-start mt-2">
+                <div class="stat-label-group">
+                    <span class="stat-title">평균 타수</span>
+                    <span class="stat-score" style="color: #0be881;" id="modalAvgWpm">0 타</span>
+                </div>
+                <div class="neon-bar-container">
+                    <div class="neon-bar neon-green" id="modalAvgWpmBar" data-width="0%"></div>
+                </div>
+
+                <div class="stat-label-group">
+                    <span class="stat-title">총 정확도</span>
+                    <span class="stat-score" style="color: #636e72;" id="modalTotalAcc">0 %</span>
+                </div>
+                <div class="neon-bar-container">
+                    <div class="neon-bar neon-silver" id="modalTotalAccBar" data-width="0%"></div>
+                </div>
+
+                <div class="stat-label-group">
+                    <span class="stat-title">최고 타수</span>
+                    <span class="stat-score" style="color: #ff9f43;" id="modalMaxWpm">0 타</span>
+                </div>
+                <div class="neon-bar-container">
+                    <div class="neon-bar neon-orange" id="modalMaxWpmBar" data-width="0%"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="text-start mt-2">
-            <div class="stat-label-group">
-                <span class="stat-title">평균 타수</span>
-                <span class="stat-score" style="color: #0be881;" id="modalAvgWpm">0 타</span>
-            </div>
-            <div class="neon-bar-container">
-                <div class="neon-bar neon-green" id="modalAvgWpmBar" data-width="0%"></div>
-            </div>
-
-            <div class="stat-label-group">
-                <span class="stat-title">총 정확도</span>
-                <span class="stat-score" style="color: #636e72;" id="modalTotalAcc">0 %</span>
-            </div>
-            <div class="neon-bar-container">
-                <div class="neon-bar neon-silver" id="modalTotalAccBar" data-width="0%"></div>
-            </div>
-
-            <div class="stat-label-group">
-                <span class="stat-title">최고 타수</span>
-                <span class="stat-score" style="color: #ff9f43;" id="modalMaxWpm">0 타</span>
-            </div>
-            <div class="neon-bar-container">
-                <div class="neon-bar neon-orange" id="modalMaxWpmBar" data-width="0%"></div>
-            </div>
+        <!-- 0개일 때 보여줄 대체 멘트 영역 (초기 숨김) -->
+        <div id="modalEmptyMessage" style="display: none; padding: 20px 0;">
+            <p class="fw-bold text-secondary">한 문장도 완료하지 못해<br>저장할 수 있는 기록이 없어요.</p>
+            <p class="text-muted small">조금만 더 집중해서 다시 도전해볼까요?</p>
         </div>
 
         <div class="mt-5 d-flex justify-content-center gap-3">
@@ -296,7 +325,7 @@
         targetSentence = data.content;
         targetReference = data.bookNameKo + ' ' + data.chapter + '장 ' + data.verse + '절';
         referenceElement.innerText = targetReference;
-        targetWpm = 0; // 문장 변경 시 현재 타수 초기화
+        targetWpm = 0;
         displayedWpm = 0;
         sentenceStartTime = 0;
         isTyping = false;
@@ -368,6 +397,14 @@
     }
 
     inputElement.addEventListener('input', function() {
+        if (!targetSentence) return;
+
+        // 과도하게 긴 오타를 방지하기 위해 최대 입력 길이를 타겟 문자열의 길이 + 10자까지만 허용합니다.
+        const maxAllowedLength = targetSentence.length + 10;
+        if (this.value.length > maxAllowedLength) {
+            this.value = this.value.substring(0, maxAllowedLength);
+        }
+
         if (sentenceStartTime === 0 && this.value.length > 0) {
             sentenceStartTime = Date.now();
             isTyping = true;
@@ -379,32 +416,45 @@
 
     function showResultModal() {
         const modal = document.getElementById('resultModalOverlay');
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-        const timeStr = min > 0 ? min + "분 " + sec + "초" : sec + "초";
-        document.getElementById('modalTotalTime').innerText = timeStr;
+        const userNic = "${not empty sessionScope.loggedInUser ? sessionScope.loggedInUser.userNic : '회원'}";
 
-        // 완료 개수 표시 업데이트
-        document.getElementById('modalCompletionText').innerText = completedCount + "개의 단문 연습을 완료했습니다.";
+        if (completedCount === 0) {
+            document.getElementById('modalIcon').innerText = "⌨️";
+            document.getElementById('modalTitle').innerHTML = '<span style="color: #ff9f43;">' + userNic + '</span>님 아쉬워요!';
+            document.getElementById('modalCompletionText').innerText = "입력된 문장이 없어 연습이 중단되었습니다.";
+            document.getElementById('modalStatsSection').style.display = "none";
+            document.getElementById('modalEmptyMessage').style.display = "block";
+        } else {
+            document.getElementById('modalIcon').innerText = "🎉";
+            document.getElementById('modalTitle').innerHTML = '<span style="color: #0d6efd;">' + userNic + '</span>님 수고하셨습니다!';
+            document.getElementById('modalCompletionText').innerText = completedCount + "개의 단문 연습을 완료했습니다.";
+            document.getElementById('modalStatsSection').style.display = "block";
+            document.getElementById('modalEmptyMessage').style.display = "none";
 
-        let avgWpm = 0;
-        if (globalTotalSeconds > 0) {
-            avgWpm = Math.round(globalTotalStrokes / (globalTotalSeconds / 60));
+            const min = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            const timeStr = min > 0 ? min + "분 " + sec + "초" : sec + "초";
+            document.getElementById('modalTotalTime').innerText = timeStr;
+
+            let avgWpm = 0;
+            if (globalTotalSeconds > 0) {
+                avgWpm = Math.round(globalTotalStrokes / (globalTotalSeconds / 60));
+            }
+            document.getElementById('modalAvgWpm').innerText = avgWpm + " 타";
+            let avgWpmWidth = Math.min((avgWpm / 1000) * 100, 100);
+            document.getElementById('modalAvgWpmBar').setAttribute('data-width', avgWpmWidth + "%");
+
+            let totalAcc = 100;
+            if (globalTypedCount > 0) {
+                totalAcc = Math.round((globalCorrectCount / globalTypedCount) * 100);
+            }
+            document.getElementById('modalTotalAcc').innerText = totalAcc + " %";
+            document.getElementById('modalTotalAccBar').setAttribute('data-width', totalAcc + "%");
+
+            document.getElementById('modalMaxWpm').innerText = maxWpm + " 타";
+            let maxWpmWidth = Math.min((maxWpm / 1000) * 100, 100);
+            document.getElementById('modalMaxWpmBar').setAttribute('data-width', maxWpmWidth + "%");
         }
-        document.getElementById('modalAvgWpm').innerText = avgWpm + " 타";
-        let avgWpmWidth = Math.min((avgWpm / 1000) * 100, 100);
-        document.getElementById('modalAvgWpmBar').setAttribute('data-width', avgWpmWidth + "%");
-
-        let totalAcc = 100;
-        if (globalTypedCount > 0) {
-            totalAcc = Math.round((globalCorrectCount / globalTypedCount) * 100);
-        }
-        document.getElementById('modalTotalAcc').innerText = totalAcc + " %";
-        document.getElementById('modalTotalAccBar').setAttribute('data-width', totalAcc + "%");
-
-        document.getElementById('modalMaxWpm').innerText = maxWpm + " 타";
-        let maxWpmWidth = Math.min((maxWpm / 1000) * 100, 100);
-        document.getElementById('modalMaxWpmBar').setAttribute('data-width', maxWpmWidth + "%");
 
         modal.classList.add('show');
         const bars = document.querySelectorAll('.neon-bar');
@@ -426,12 +476,10 @@
 
             this.readOnly = true;
             const typed = inputElement.value;
-
-            // --- [수정] 실제로 끝까지 입력했는지 확인 ---
             const isFinished = typed.length >= targetSentence.length;
 
             if (isFinished) {
-                completedCount++; // 실제 완료 개수 증가
+                completedCount++;
 
                 let currentCorrect = 0;
                 for (let i = 0; i < typed.length; i++) {
@@ -450,7 +498,6 @@
                 let finalSentenceWpm = Math.round(strokes / (elapsedSeconds / 60));
                 if (finalSentenceWpm > maxWpm) maxWpm = finalSentenceWpm;
 
-                // 통계 업데이트
                 let totalAcc = globalTypedCount > 0 ? Math.round((globalCorrectCount / globalTypedCount) * 100) : 100;
                 totalAccuracyElement.innerText = totalAcc + "%";
 
@@ -463,7 +510,7 @@
             }
 
             isTyping = false;
-            currentProgress++; // 시도 횟수(진행도)는 무조건 증가
+            currentProgress++;
 
             let percentage = (currentProgress / totalSentences) * 100;
             progressBar.style.width = percentage + '%';
@@ -471,13 +518,12 @@
             progressTextDisplay.innerText = currentProgress + ' / ' + totalSentences;
 
             if (currentProgress >= totalSentences) {
-                // --- [수정] 완료한 개수가 0개이면 저장하지 않음 ---
                 if (completedCount === 0) {
-                    isSaving = true; // 중복 방지
-                    fakeDisplay.innerText = "완료된 문장이 없어 기록을 저장하지 않습니다.";
+                    isSaving = true;
+                    fakeDisplay.innerText = "저장할 수 있는 기록이 없습니다.";
                     setTimeout(() => {
                         showResultModal();
-                    }, 1000);
+                    }, 800);
                     return;
                 }
 
@@ -492,18 +538,16 @@
                     duration: seconds
                 };
 
-                fetch('/api/verses/records', {
+                fetch('/api/verses/short-records', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(recordData)
                 })
                     .then(response => response.text())
                     .then(data => {
-                        console.log('기록 저장 성공:', data);
                         showResultModal();
                     })
                     .catch(error => {
-                        console.error('기록 저장 에러:', error);
                         showResultModal();
                     });
                 return;
