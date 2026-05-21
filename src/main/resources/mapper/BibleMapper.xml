@@ -35,7 +35,8 @@
                   LIMIT 20) temp
     </select>
 
-    <insert id="saveShortPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleShortSaveDto">
+    <!-- 단문 연습 데이터 저장 -->
+    <insert id="saveShortPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleSaveDto">
         INSERT INTO speed_his(
                                user_idx
                              , practice_type
@@ -46,7 +47,7 @@
                              , ins_idx
                              , ins_date
         ) VALUES (
-                         #{userIdx}
+                        #{userIdx}
                       , #{practiceType}
                       , #{speed}
                       , #{accuracy}
@@ -55,5 +56,66 @@
                       , #{userIdx}
                       , NOW()
                          )
+    </insert>
+
+    <!-- 장문 연습 데이터 호출 매핑 규칙 -->
+    <resultMap id="longPracticeData" type="com.bible.bible_typing.dto.response.LongPracticeResponse">
+        <!-- 부모 데이터 -->
+        <result property="bookNameKo" column="book_name_ko" />
+        <result property="bookNameEn" column="book_name_en" />
+        <result property="testament" column="testament" />
+        <result property="chapter" column="chapter" />
+        <!-- 자식 데이터 -->
+        <collection property="verseList" javaType="java.util.List" ofType="com.bible.bible_typing.dto.response.LongPracticeResponse$VerseDetail">
+            <result property="verse" column="verse" />
+            <result property="content" column="content" />
+        </collection>
+    </resultMap>
+    <select id="getLongPractice" resultMap="longPracticeData">
+        SELECT a.book_name_ko
+             , a.book_name_en
+             , a.testament
+             , b.chapter
+             , b.verse
+             , b.content
+        FROM bible_info a
+                 INNER JOIN bible_verses b
+                            ON a.id = b.book_id
+        WHERE a.book_code_en = #{bookCodeEn}
+          AND b.chapter = #{chapter}
+          <!--  #AND b.verse = #{verse}  -->
+        ORDER BY b.verse
+    </select>
+
+    <!-- 장문 연습 데이터 저장 -->
+    <insert id="saveLongPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleSaveDto">
+       INSERT INTO speed_his( user_idx
+                            , practice_type
+                            , book_code_ko
+                            , book_code_en
+                            , title
+                            , chapter
+                            , speed
+                            , testament
+                            , accuracy
+                            , duration
+                            , use_yn
+                            , ins_idx
+                            , ins_date
+       ) VALUES (
+                         #{userIdx}
+                       , #{practiceType}
+                       , #{bookCodeKo}
+                       , #{bookCodeEn}
+                       , #{title}
+                       , #{chapter}
+                       , #{speed}
+                       , #{testament}
+                       , #{accuracy}
+                       , #{duration}
+                       , 'Y'
+                       , #{userIdx}
+                       , NOW()
+                       )
     </insert>
 </mapper>

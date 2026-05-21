@@ -1,7 +1,10 @@
 package com.bible.bible_typing.service;
 
 import com.bible.bible_typing.dto.BibleDto;
+import com.bible.bible_typing.dto.request.LongPracticeRequest;
+import com.bible.bible_typing.dto.request.SaveLongRequest;
 import com.bible.bible_typing.dto.request.SaveShortRequest;
+import com.bible.bible_typing.dto.response.LongPracticeResponse;
 import com.bible.bible_typing.dto.response.ShortPracticeResponse;
 import com.bible.bible_typing.mapper.BibleMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ public class PracticeService {
 
     private final BibleMapper bibleMapper;
 
+    // 단문 연습용 20개 데이터 호출
     public List<ShortPracticeResponse> getShortPractice() {
 
         List<BibleDto.BibleShortPracticeDto> shortPracticeList = bibleMapper.getShortPractice();
@@ -31,15 +35,39 @@ public class PracticeService {
                         .build()
         ).toList();
     }
-
+    // 단문 연습 후 데이터 저장
     public void saveShortPracticeHistory(SaveShortRequest saveShortRequest, int userIdx) {
-        BibleDto.BibleShortSaveDto bibleShortSaveDto = BibleDto.BibleShortSaveDto.builder()
-                        .userIdx(userIdx)
-                        .practiceType(saveShortRequest.getPracticeType())
-                        .speed(saveShortRequest.getSpeed())
-                        .accuracy(saveShortRequest.getAccuracy())
-                        .duration(saveShortRequest.getDuration())
-                        .build();
-        bibleMapper.saveShortPracticeHistory(bibleShortSaveDto);
+        BibleDto.BibleSaveDto bibleSaveDto = BibleDto.BibleSaveDto.builder()
+                .userIdx(userIdx)
+                .practiceType(saveShortRequest.getPracticeType())
+                .speed(saveShortRequest.getSpeed())
+                .accuracy(saveShortRequest.getAccuracy())
+                .duration(saveShortRequest.getDuration())
+                .build();
+        bibleMapper.saveShortPracticeHistory(bibleSaveDto);
+    }
+
+    // 장문 연습 데이터 호출
+    // resoponseDto로 바로 적용 => 가공 필요x
+    public LongPracticeResponse getLongPractice(LongPracticeRequest longPracticeRequest) {
+        return bibleMapper.getLongPractice(longPracticeRequest);
+    }
+
+    // 장문 연습 후 데이터 저장
+    public void saveLongPracticeHistory(SaveLongRequest saveLongRequest, int userIdx) {
+        BibleDto.BibleSaveDto bibleLongSaveDto = BibleDto.BibleSaveDto.builder()
+                .userIdx(userIdx)
+                .practiceType(saveLongRequest.getPracticeType())
+                .bookCodeKo(saveLongRequest.getBookCodeKo())
+                .bookCodeEn(saveLongRequest.getBookCodeEn())
+                .title(saveLongRequest.getTitle())
+                .chapter(saveLongRequest.getChapter())
+                .speed(saveLongRequest.getSpeed())
+                .testament(saveLongRequest.getTestament())
+                .accuracy(saveLongRequest.getAccuracy())
+                .duration(saveLongRequest.getDuration())
+                .build();
+        bibleMapper.saveLongPracticeHistory(bibleLongSaveDto);
+
     }
 }

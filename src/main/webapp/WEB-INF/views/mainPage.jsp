@@ -7,22 +7,113 @@
     <title>BibleTyping - 대시보드</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <!-- 분리된 성경 데이터 스크립트 임포트 -->
+    <script src="/js/bibleData.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* 모달 내부 커스텀 스타일 (현대적 그리드 및 버튼) */
+        .testament-btn {
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            border: 2px solid #e9ecef !important;
+        }
+        .testament-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+            border-color: #0d6efd !important;
+        }
+
+        .modern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            padding: 5px 0;
+        }
+
+        .modern-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 14px 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.2s ease;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            user-select: none;
+        }
+
+        .modern-btn:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
+        }
+
+        .chapter-modern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 12px;
+            padding: 5px 0;
+        }
+
+        .chapter-btn {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 14px 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #343a40;
+            transition: all 0.2s ease;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .chapter-btn:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #ffffff;
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
+        }
+
+        /* 제목 꾸미기 */
+        .step-header {
+            background-color: #f8f9fa;
+            padding: 12px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0d6efd;
+            font-size: 1.1rem;
+            color: #212529;
+            margin-bottom: 20px;
+        }
+
+        /* [추가] 시작 버튼 마우스 호버 시 글자 밑줄 생김 방지 */
+        .btn-start:hover {
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- 헤더: 단문 연습 페이지와 동일한 크기를 유지하기 위해 내부 여백 클래스 정리 -->
 <header class="practice-header">
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
-        <!-- 상단 좌측: 로고 및 타이틀 (py-2 제거하여 최소 크기 유지) -->
         <div class="navbar-brand-group d-flex align-items-center">
             <img src="/images/bible3.png" class="logo-img me-2" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3004/3004613.png'" style="height: 30px;">
             <span class="logo-text fs-5 fw-bold">BibleTyping - 대시보드</span>
         </div>
 
-        <!-- 상단 우측: 사용자 정보 및 로그아웃 -->
         <c:if test="${not empty sessionScope.loggedInUser}">
             <div class="d-flex align-items-center">
                 <span class="me-3 text-white fw-bold small">${sessionScope.loggedInUser.userNic}님 환영합니다!</span>
@@ -32,7 +123,7 @@
     </div>
 </header>
 
-<main class="dashboard-content">
+<main class="dashboard-content mt-5">
     <div class="container">
         <div class="row mb-5 text-center">
             <div class="col">
@@ -75,27 +166,40 @@
 <!-- 장문 연습 모달 -->
 <div class="modal fade" id="longPracticeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header bg-dark text-white px-4 py-3">
-                <h5 class="modal-title fw-bold" id="modalTitle">장문 연습 설정</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4" id="modalBodyContainer">
+        <div class="modal-content shadow-lg border-0">
+            <!-- 모달 헤더 -->
+            <div class="modal-header modal-header-custom text-white" style="border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; background-color: #212529;">
+                <div class="modal-header-side" style="width: 60px;">
+                    <div id="headerBackBtn" onclick="handleBackBtn()" style="cursor: pointer; display: none; align-items: center; gap: 5px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span class="fw-bold">뒤로</span>
+                    </div>
+                </div>
 
-                <!-- Step 1: 분류 선택 (구약/신약) -->
+                <h5 class="modal-title-center flex-grow-1 text-center m-0 fw-bold" id="modalTitle">장문 연습 설정</h5>
+
+                <div class="modal-header-side text-end" style="width: 60px;">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+
+            <div class="modal-body p-4" id="modalBodyContainer">
+                <!-- Step 1: 구약/신약 선택 -->
                 <div id="step1">
-                    <p class="text-center fw-bold text-secondary mb-4" style="font-size: 1rem;">하나님의 말씀을 따라가볼까요? 구약 또는 신약을 선택해 주세요.</p>
+                    <p class="text-center fw-bold text-secondary mb-4">구약 또는 신약을 선택해 주세요.</p>
                     <div class="row g-4 justify-content-center">
                         <div class="col-sm-5">
-                            <div class="testament-btn old-testament-btn" onclick="goToStep2('old')">
-                                <span class="testament-icon">📜</span>
-                                <span class="testament-label">구약 성경</span>
+                            <div class="testament-btn p-4 text-center rounded-4" onclick="goToStep2('old')">
+                                <span class="testament-icon d-block mb-2" style="font-size: 2.5rem;">📜</span>
+                                <span class="testament-label fw-bold text-dark fs-5">구약 성경</span>
                             </div>
                         </div>
                         <div class="col-sm-5">
-                            <div class="testament-btn new-testament-btn" onclick="goToStep2('new')">
-                                <span class="testament-icon">🕊️</span>
-                                <span class="testament-label">신약 성경</span>
+                            <div class="testament-btn p-4 text-center rounded-4" onclick="goToStep2('new')">
+                                <span class="testament-icon d-block mb-2" style="font-size: 2.5rem;">🕊️</span>
+                                <span class="testament-label fw-bold text-dark fs-5">신약 성경</span>
                             </div>
                         </div>
                     </div>
@@ -103,30 +207,21 @@
 
                 <!-- Step 2: 성경 권 선택 -->
                 <div id="step2" style="display: none;">
-                    <div class="btn-back" onclick="handleBackBtn()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        뒤로
-                    </div>
-                    <h6 class="fw-bold mb-3 d-flex align-items-center">
-                        <span id="testamentIconDisplay" class="me-2"></span>
+                    <div class="step-header fw-bold d-flex align-items-center">
+                        <span id="testamentIconDisplay" class="me-2 fs-4"></span>
                         <span id="testamentNameDisplay"></span>
-                    </h6>
-                    <div class="bible-grid" id="bibleList"></div>
+                    </div>
+                    <div class="modern-grid" id="bibleList"></div>
                 </div>
 
                 <!-- Step 3: 장 선택 -->
                 <div id="step3" style="display: none;">
-                    <div class="btn-back" onclick="handleBackBtn()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        뒤로
+                    <div class="step-header fw-bold d-flex align-items-center">
+                        <span class="me-2 text-primary fs-5">📖</span>
+                        <span><span id="selectedBookDisplay" class="text-primary"></span> 장 선택</span>
                     </div>
-                    <h6 class="fw-bold mb-3 d-flex align-items-center">
-                        <span class="me-2" style="color:currentColor">●</span>
-                        <span id="selectedBookDisplay"></span> 장 선택
-                    </h6>
-                    <div class="chapter-grid" id="chapterList"></div>
+                    <div class="chapter-modern-grid" id="chapterList"></div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -137,51 +232,44 @@
 </footer>
 
 <script>
-    const bibleData = {
-        old: [
-            { name: "창세기", chapters: 50 }, { name: "출애굽기", chapters: 40 }, { name: "레위기", chapters: 27 },
-            { name: "민수기", chapters: 36 }, { name: "신명기", chapters: 34 }, { name: "여호수아", chapters: 24 },
-            { name: "사사기", chapters: 21 }, { name: "룻기", chapters: 4 }, { name: "사무엘상", chapters: 31 },
-            { name: "사무엘하", chapters: 24 }, { name: "열왕기상", chapters: 22 }, { name: "열왕기하", chapters: 25 },
-            { name: "역대상", chapters: 29 }, { name: "역대하", chapters: 36 }, { name: "에스라", chapters: 10 },
-            { name: "느헤미야", chapters: 13 }, { name: "에스더", chapters: 10 }, { name: "욥기", chapters: 42 },
-            { name: "시편", chapters: 150 }, { name: "잠언", chapters: 31 }, { name: "전도서", chapters: 12 },
-            { name: "아가", chapters: 8 }, { name: "이사야", chapters: 66 }, { name: "예레미야", chapters: 52 },
-            { name: "예레미야 애가", chapters: 5 }, { name: "에스겔", chapters: 48 }, { name: "다니엘", chapters: 12 },
-            { name: "호세아", chapters: 14 }, { name: "요엘", chapters: 3 }, { name: "아모스", chapters: 9 },
-            { name: "오바댜", chapters: 1 }, { name: "요나", chapters: 4 }, { name: "미가", chapters: 7 },
-            { name: "나훔", chapters: 3 }, { name: "하박국", chapters: 3 }, { name: "스바냐", chapters: 3 },
-            { name: "학개", chapters: 2 }, { name: "스가랴", chapters: 14 }, { name: "말라기", chapters: 4 }
-        ],
-        new: [
-            { name: "마태복음", chapters: 28 }, { name: "마가복음", chapters: 16 }, { name: "누가복음", chapters: 24 },
-            { name: "요한복음", chapters: 21 }, { name: "사도행전", chapters: 28 }, { name: "로마서", chapters: 16 },
-            { name: "고린도전서", chapters: 16 }, { name: "고린도후서", chapters: 13 }, { name: "갈라디아서", chapters: 6 },
-            { name: "에베소서", chapters: 6 }, { name: "빌립보서", chapters: 4 }, { name: "골로새서", chapters: 4 },
-            { name: "데살로니가전서", chapters: 5 }, { name: "데살로니가후서", chapters: 3 }, { name: "디모데전서", chapters: 6 },
-            { name: "디모데후서", chapters: 4 }, { name: "디도서", chapters: 3 }, { name: "빌레몬서", 관리: 1 },
-            { name: "히브리서", chapters: 13 }, { name: "야고보서", chapters: 5 }, { name: "베드로전서", chapters: 5 },
-            { name: "베드로후서", chapters: 3 }, { name: "요한1서", chapters: 5 }, { name: "요한2서", chapters: 1 },
-            { name: "요한3서", chapters: 1 }, { name: "유다서", chapters: 1 }, { name: "요한계시록", chapters: 22 }
-        ]
-    };
-
+    // JS 데이터는 js/bibleData.js에서 bibleData 객체로 불러왔습니다.
     let currentTestament = '';
-    let selectedBook = '';
-    let selectedBookChapters = 0;
+    let selectedBookObj = null;
+    let isNavigating = false; // 페이지 이동 중 상태 플래그
 
-    /* --- Browser History API 연동 로직 --- */
     function pushState(step) {
-        history.pushState({ modalStep: step, testament: currentTestament, book: selectedBook, chapters: selectedBookChapters }, null);
+        history.pushState({ modalStep: step, testament: currentTestament, bookObj: selectedBookObj }, null);
     }
 
     $(window).on('popstate', function(event) {
+        if (isNavigating) return; // 페이지 이동을 위해 히스토리를 되감을 때는 모달 렌더링 무시
+
         const state = event.originalEvent.state;
         if (state && state.modalStep) {
-            renderStep(state.modalStep, state.testament, state.book, state.chapters);
+            renderStep(state.modalStep, state.testament, state.bookObj);
         } else {
             $('#longPracticeModal').modal('hide');
         }
+    });
+
+    // BFCache(뒤로가기로 화면 복귀) 대응 및 페이지 로드 시 상태 초기화
+    $(window).on('pageshow', function(event) {
+        isNavigating = false;
+
+        // [추가] 뒤로가기로 대시보드에 복귀했을 때, 백그라운드에서 모달 UI를 1단계로 강제 리셋
+        showStep1();
+
+        if (event.originalEvent.persisted || (!history.state || !history.state.modalStep)) {
+            // 브라우저 캐시로 인해 모달이 열린 채 복원되었다면 강제 종료
+            $('#longPracticeModal').modal('hide');
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('padding-right', '');
+        }
+    });
+
+    // [추가] 장문 연습 시작 버튼을 눌러 모달을 새로 열 때, 잔여 캐시를 무시하고 항상 1단계 구약/신약 선택 화면이 뜨도록 보장
+    $('#longPracticeModal').on('show.bs.modal', function () {
+        showStep1();
     });
 
     $('#longPracticeModal').on('shown.bs.modal', function () {
@@ -191,50 +279,81 @@
     });
 
     $('#longPracticeModal').on('hidden.bs.modal', function () {
-        showStep1();
+        if (!isNavigating) {
+            showStep1();
+        }
     });
 
     function handleBackBtn() {
         history.back();
     }
 
-    /* --- 단계별 화면 렌더링 로직 --- */
-    function renderStep(step, testament, book, chapters) {
+    // 객체를 넘겨받아 단계별 UI 렌더링
+    function renderStep(step, testament, bookObj) {
         currentTestament = testament;
-        selectedBook = book;
-        selectedBookChapters = chapters;
+        selectedBookObj = bookObj;
 
         $('#step1, #step2, #step3').hide();
 
         if (step === 1) {
-            $('#step1').show();
+            $('#headerBackBtn').hide();
             $('#modalTitle').text("장문 연습 설정");
-            $('#modalBodyContainer').removeClass('old-theme new-theme');
-        } else if (step === 2) {
-            const isOld = (testament === 'old');
-            $('#modalBodyContainer').removeClass('old-theme new-theme').addClass(isOld ? 'old-theme' : 'new-theme');
-            $('#testamentIconDisplay').text(isOld ? "📜" : "🕊️");
-            $('#testamentNameDisplay').text(isOld ? "구약 성경 목록" : "신약 성경 목록");
+            $('#step1').show();
+        } else {
+            $('#headerBackBtn').css('display', 'flex');
 
-            const list = isOld ? bibleData.old : bibleData.new;
-            const grid = $('#bibleList').empty();
-            list.forEach(b => {
-                const item = $('<div class="grid-item"></div>').text(b.name);
-                item.on('click', () => goToStep3(b.name, b.chapters));
-                grid.append(item);
-            });
-            $('#step2').show();
-        } else if (step === 3) {
-            $('#selectedBookDisplay').text(book);
-            const grid = $('#chapterList').empty();
-            for (let i = 1; i <= chapters; i++) {
-                const item = $('<div class="grid-item"></div>').text(i + "장");
-                item.on('click', () => {
-                    location.href = `/practice/long?book=\${encodeURIComponent(book)}&chapter=\${i}`;
+            if (step === 2) {
+                const isOld = (testament === 'old');
+                $('#testamentIconDisplay').text(isOld ? "📜" : "🕊️");
+                $('#testamentNameDisplay').text(isOld ? "구약 성경 목록" : "신약 성경 목록");
+
+                const list = isOld ? bibleData.old : bibleData.new;
+                const grid = $('#bibleList').empty();
+
+                // 세련된 그리드 버튼 스타일 적용
+                list.forEach(bookItem => {
+                    const item = $('<div class="modern-btn"></div>').text(bookItem.bookNameKo);
+                    item.on('click', () => goToStep3(bookItem));
+                    grid.append(item);
                 });
-                grid.append(item);
+                $('#step2').show();
+            } else if (step === 3) {
+                $('#selectedBookDisplay').text(bookObj.bookNameKo);
+                const grid = $('#chapterList').empty();
+
+                // 장 번호 버튼 생성
+                for (let i = 1; i <= bookObj.chapters; i++) {
+                    const item = $('<div class="chapter-btn"></div>').text(i + "장");
+
+                    item.on('click', (e) => {
+                        e.preventDefault();
+
+                        // 1. 중복 클릭 방지 플래그 설정
+                        if (isNavigating) return;
+                        isNavigating = true;
+
+                        // 2. BFCache 스냅샷 방지: 화면에서 모달 및 백드롭(어두운 배경) 즉시 강제 파괴
+                        $('#longPracticeModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open').css('padding-right', '');
+
+                        // 3. 쌓여있는 모달 히스토리 스택(보통 3단계) 파악 후 한 번에 뒤로 되감기
+                        const stepsToRewind = (history.state && history.state.modalStep) ? -history.state.modalStep : -3;
+                        history.go(stepsToRewind);
+
+                        // [수정] JSP EL과 충돌을 막기 위해 템플릿 리터럴을 제거하고 일반 문자열 덧셈 연산으로 쿼리스트링 생성
+                        const queryString = "?bookCodeEn=" + encodeURIComponent(bookObj.bookCodeEn) + "&chapter=" + i;
+
+                        // 4. 히스토리가 완전히 백지화된 후 연습 페이지로 안전하게 이동 (150ms 대기)
+                        setTimeout(() => {
+                            location.href = "/longPractice" + queryString;
+                        }, 150);
+                    });
+
+                    grid.append(item);
+                }
+                $('#step3').show();
             }
-            $('#step3').show();
         }
     }
 
@@ -248,11 +367,10 @@
         renderStep(2, testament);
     }
 
-    function goToStep3(bookName, chapters) {
-        selectedBook = bookName;
-        selectedBookChapters = chapters;
+    function goToStep3(bookItem) {
+        selectedBookObj = bookItem;
         pushState(3);
-        renderStep(3, currentTestament, bookName, chapters);
+        renderStep(3, currentTestament, bookItem);
     }
 </script>
 </body>

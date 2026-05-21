@@ -51,7 +51,10 @@ public class MainController {
 	}
 	
 	@GetMapping(value = "/longPractice")
-	public String longPractice() {
+	public String longPractice(HttpSession session) {
+		if (session.getAttribute("loggedInUser") == null) {
+			return "redirect:/";
+		}
 		return "longPractice";
 	}
 }
