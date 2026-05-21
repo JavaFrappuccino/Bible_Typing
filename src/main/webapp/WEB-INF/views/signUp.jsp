@@ -26,7 +26,7 @@
             }
 
             $.ajax({
-                url: '/api/user/checkId', // 아이디 중복확인 요청 URL
+                url: '/api/users/checkId', // 아이디 중복확인 요청 URL
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ user_id: userId }),
@@ -93,18 +93,18 @@
             }
 
             var signUpData = {
-                user_id: $('#user_id').val(),
-                user_pw: $('#user_pw').val(),
-                password_confirm: $('#password_confirm').val(),
-                user_nm: $('#user_nm').val(),
-                user_nic: $('#user_nic').val(),
-                user_email: $('#user_email').val(),
-                user_birth: $('#user_birth').val(),
-                user_phone: $('#user_phone').val()
+                userId: $('#user_id').val(),
+                userPw: $('#user_pw').val(),
+                passwordConfirm: $('#password_confirm').val(),
+                userNm: $('#user_nm').val(),
+                userNic: $('#user_nic').val(),
+                userEmail: $('#user_email').val(),
+                userBirth: $('#user_birth').val(),
+                userPhone: $('#user_phone').val()
             };
 
             $.ajax({
-                url: '/api/user/signUpProc',
+                url: '/api/users/signUpProc',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(signUpData),
