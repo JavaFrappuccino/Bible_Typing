@@ -1,23 +1,27 @@
 package com.bible.bible_typing.service;
 
 import com.bible.bible_typing.dto.BibleDto;
+import com.bible.bible_typing.dto.UserInfoDto;
 import com.bible.bible_typing.dto.request.LongPracticeRequest;
 import com.bible.bible_typing.dto.request.SaveLongRequest;
 import com.bible.bible_typing.dto.request.SaveShortRequest;
 import com.bible.bible_typing.dto.response.LongPracticeResponse;
 import com.bible.bible_typing.dto.response.ShortPracticeResponse;
 import com.bible.bible_typing.mapper.BibleMapper;
+import com.bible.bible_typing.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PracticeService {
 
     private final BibleMapper bibleMapper;
+    private final UserInfoDto userInfoDto;
+    private final UserMapper userMapper;
 
     // 단문 연습용 20개 데이터 호출
     public List<ShortPracticeResponse> getShortPractice() {
@@ -36,7 +40,8 @@ public class PracticeService {
         ).toList();
     }
     // 단문 연습 후 데이터 저장
-    public void saveShortPracticeHistory(SaveShortRequest saveShortRequest, int userIdx) {
+    @Transactional
+    public void saveShortPracticeHistory(SaveShortRequest saveShortRequest, int userIdx, String userId) {
         BibleDto.BibleSaveDto bibleSaveDto = BibleDto.BibleSaveDto.builder()
                 .userIdx(userIdx)
                 .practiceType(saveShortRequest.getPracticeType())
@@ -45,6 +50,10 @@ public class PracticeService {
                 .duration(saveShortRequest.getDuration())
                 .build();
         bibleMapper.saveShortPracticeHistory(bibleSaveDto);
+
+        // 최고 기록 업데이트 (단/장문 공통 사용)
+        userMapper.updateMaxSpeedIfGreater(userId, saveShortRequest.getPracticeType(),
+                saveShortRequest.getSpeed(), userIdx);
     }
 
     // 장문 연습 데이터 호출
@@ -54,7 +63,8 @@ public class PracticeService {
     }
 
     // 장문 연습 후 데이터 저장
-    public void saveLongPracticeHistory(SaveLongRequest saveLongRequest, int userIdx) {
+    @Transactional
+    public void saveLongPracticeHistory(SaveLongRequest saveLongRequest, String userId, int userIdx) {
         BibleDto.BibleSaveDto bibleLongSaveDto = BibleDto.BibleSaveDto.builder()
                 .userIdx(userIdx)
                 .practiceType(saveLongRequest.getPracticeType())
@@ -69,5 +79,9 @@ public class PracticeService {
                 .build();
         bibleMapper.saveLongPracticeHistory(bibleLongSaveDto);
 
+        // 최고 기록 업데이트 (단/장문 공통 사용)
+        userMapper.updateMaxSpeedIfGreater(userId, saveLongRequest.getPracticeType(),
+                saveLongRequest.getSpeed(), userIdx);
     }
+
 }
