@@ -51,4 +51,20 @@
         )
     </insert>
 
+    <!-- 타자 연습 후 최고 타수 업데이트 (단/장문 공통)-->
+    <update id="updateMaxSpeedIfGreater">
+        UPDATE user_info
+        SET
+        <choose>
+            <when test="practiceType == 'short'">
+                max_speed_short = GREATEST(IFNULL(max_speed_short, 0), #{currentSpeed})
+            </when>
+            <when test="practiceType == 'long'">
+                max_speed_long = GREATEST(IFNULL(max_speed_long, 0), #{currentSpeed})
+            </when>
+        </choose>
+        , upt_idx = #{userIdx}
+        , upt_date = NOW()
+        WHERE user_id = #{userId}
+    </update>
 </mapper>

@@ -34,13 +34,13 @@ public class PracticeController {
 
     // 단문 연습 후 데이터 저장
     @PostMapping("/short-records")
-    public ResponseEntity<String> saveShortPracticeHistory(HttpSession session, @RequestBody SaveShortRequest saveShortRequest) {
+    public ResponseEntity<ApiResponse<SaveShortRequest>> saveShortPracticeHistory(HttpSession session, @RequestBody SaveShortRequest saveShortRequest) {
         UserInfoDto loginUser = (UserInfoDto) session.getAttribute("loggedInUser");
         if (loginUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.fail("로그인이 필요합니다."));
         }
-        practiceService.saveShortPracticeHistory(saveShortRequest, loginUser.getUserIdx());
-        return ResponseEntity.ok().body("단문 연습 데이터 저장 완료");
+        practiceService.saveShortPracticeHistory(saveShortRequest, loginUser.getUserIdx(), loginUser.getUserId());
+        return ResponseEntity.ok().body(ApiResponse.success("단문 연습 기록이 저장되었습니다.", saveShortRequest));
     }
 
     // 장문 연습 데이터 호출
@@ -56,7 +56,7 @@ public class PracticeController {
         if (loginUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.fail("로그인이 필요합니다."));
         }
-        practiceService.saveLongPracticeHistory(saveLongRequest, loginUser.getUserIdx());
+        practiceService.saveLongPracticeHistory(saveLongRequest, loginUser.getUserId(), loginUser.getUserIdx());
         return ResponseEntity.ok().body(ApiResponse.success(saveLongRequest));
     }
 }
