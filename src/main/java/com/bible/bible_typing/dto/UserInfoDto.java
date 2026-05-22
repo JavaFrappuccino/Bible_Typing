@@ -1,12 +1,9 @@
 package com.bible.bible_typing.dto;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 
 @Data
-@Component
 public class UserInfoDto {
 
     private int userIdx;

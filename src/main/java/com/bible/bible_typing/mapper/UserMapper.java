@@ -2,7 +2,6 @@ package com.bible.bible_typing.mapper;
 
 import com.bible.bible_typing.dto.UserInfoDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
@@ -27,7 +26,4 @@ public interface UserMapper {
      */
     UserInfoDto findByUserId(String userId);
 
-    // 최고 기록 업데이트
-    void updateMaxSpeedIfGreater(@Param("userId") String userId, @Param("practiceType") String practiceType,
-                                 @Param("currentSpeed") int currentSpeed, @Param("userIdx") int userIdx);
 }
