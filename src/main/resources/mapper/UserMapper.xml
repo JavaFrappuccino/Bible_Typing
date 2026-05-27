@@ -10,19 +10,21 @@
 
     <select id="findByUserId" parameterType="string" resultType="com.bible.bible_typing.dto.UserInfoDto">
         SELECT
-            user_idx,
-            user_id,
-            user_pw,
-            user_nm,
-            user_nic,
-            user_email,
-            user_birth,
-            user_phone,
-            use_yn,
-            ins_idx,
-            ins_date,
-            upt_idx,
-            upt_date
+            user_idx
+            , user_id
+            , user_pw
+            , user_nm
+            , user_nic
+            , user_email
+            , user_birth
+            , user_phone
+            , max_speed_short
+            , max_speed_long
+            , use_yn
+            , ins_idx
+            , ins_date
+            , upt_idx
+            , upt_date
         FROM user_info
         WHERE user_id = #{userId}
     </select>

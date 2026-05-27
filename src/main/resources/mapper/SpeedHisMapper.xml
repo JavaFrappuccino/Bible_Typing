@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bible.bible_typing.mapper.SpeedHisMapper">
+
+    <!-- 대시보드에 띄울 사용자 연습 기록 조회 -->
+    <select id="getSpeedHisDashboardById" resultType="com.bible.bible_typing.dto.response.SpeedHisDashboardResponse">
+        SELECT
+            IFNULL(ROUND(AVG(accuracy)), 0) AS avgAccuracy,
+
+            IFNULL(SUM(duration), 0) AS totalDuration,
+
+            IFNULL(
+                    ROUND(AVG(CASE WHEN ins_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN speed END)),
+                    0
+            ) AS sevenDayAvgSpeed
+        FROM speed_his
+        WHERE user_idx = #{userIdx}
+    </select>
+</mapper>
