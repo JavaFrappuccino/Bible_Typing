@@ -14,95 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <style>
-        /* 모달 내부 커스텀 스타일 (현대적 그리드 및 버튼) */
-        .testament-btn {
-            background-color: #ffffff;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            border: 2px solid #e9ecef !important;
-        }
-        .testament-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-            border-color: #0d6efd !important;
-        }
 
-        .modern-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 12px;
-            padding: 5px 0;
-        }
-
-        .modern-btn {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 14px 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #495057;
-            transition: all 0.2s ease;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            user-select: none;
-        }
-
-        .modern-btn:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: #ffffff;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
-        }
-
-        .chapter-modern-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            gap: 12px;
-            padding: 5px 0;
-        }
-
-        .chapter-btn {
-            background-color: #ffffff;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 14px 0;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #343a40;
-            transition: all 0.2s ease;
-            text-align: center;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .chapter-btn:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: #ffffff;
-            transform: scale(1.08);
-            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
-        }
-
-        /* 제목 꾸미기 */
-        .step-header {
-            background-color: #f8f9fa;
-            padding: 12px 18px;
-            border-radius: 10px;
-            border-left: 4px solid #0d6efd;
-            font-size: 1.1rem;
-            color: #212529;
-            margin-bottom: 20px;
-        }
-
-        /* [추가] 시작 버튼 마우스 호버 시 글자 밑줄 생김 방지 */
-        .btn-start:hover {
-            text-decoration: none !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -128,27 +40,38 @@
         <div class="row mb-5 text-center">
             <div class="col">
                 <h2 class="fw-bold">오늘도 기록을 경신해볼까요? 🚀</h2>
-                <p class="text-muted mt-2">최근 7일간의 평균 타수는 <strong class="text-dark">${avgWpm != null ? avgWpm : 0} WPM</strong>입니다.</p>
+                <p class="text-muted mt-2">최근 7일간의 평균 타수는 <strong class="text-dark">${history.sevenDayAvgSpeed != null ? history.sevenDayAvgSpeed : 0} WPM</strong>입니다.</p>
             </div>
         </div>
 
+        <!-- 대시보드 주요 요약 카드 영역 (4단 구성) -->
         <div class="row mb-5">
-            <div class="col-md-4 mb-3">
+            <!-- 1. 단문 최고 타수 -->
+            <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card-common text-center p-4">
-                    <h5 class="text-muted mb-3 fw-bold" style="font-size: 0.9rem;">최고 타수</h5>
-                    <h2 class="display-6 fw-bold text-primary">${maxWpm != null ? maxWpm : 0} <small class="text-muted" style="font-size: 1rem">WPM</small></h2>
+                    <h5 class="text-muted mb-3 fw-bold" style="font-size: 0.9rem;">단문 최고 타수</h5>
+                    <h2 class="display-6 fw-bold text-primary">${user.maxSpeedShort != null ? user.maxSpeedShort : 0} <small class="text-muted" style="font-size: 1rem">WPM</small></h2>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <!-- 2. 장문 최고 타수 -->
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card-common text-center p-4">
+                    <h5 class="text-muted mb-3 fw-bold" style="font-size: 0.9rem;">장문 최고 타수</h5>
+                    <h2 class="display-6 fw-bold text-primary">${user.maxSpeedLong != null ? user.maxSpeedLong : 0} <small class="text-muted" style="font-size: 1rem">WPM</small></h2>
+                </div>
+            </div>
+            <!-- 3. 평균 정확도 -->
+            <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card-common text-center p-4">
                     <h5 class="text-muted mb-3 fw-bold" style="font-size: 0.9rem;">평균 정확도</h5>
-                    <h2 class="display-6 fw-bold text-success">${avgAccuracy != null ? avgAccuracy : 0}%</h2>
+                    <h2 class="display-6 fw-bold text-success">${history.avgAccuracy != null ? history.avgAccuracy : 0}%</h2>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <!-- 4. 전체 연습 시간 -->
+            <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card-common text-center p-4">
                     <h5 class="text-muted mb-3 fw-bold" style="font-size: 0.9rem;">전체 연습 시간</h5>
-                    <h2 class="display-6 fw-bold text-info">${totalTime != null ? totalTime : 0} <small class="text-muted" style="font-size: 1rem">분</small></h2>
+                    <h2 class="display-6 fw-bold text-info">${history.totalDuration != null ? history.totalDuration : 0} <small class="text-muted" style="font-size: 1rem"></small></h2>
                 </div>
             </div>
         </div>
@@ -256,7 +179,7 @@
     $(window).on('pageshow', function(event) {
         isNavigating = false;
 
-        // [추가] 뒤로가기로 대시보드에 복귀했을 때, 백그라운드에서 모달 UI를 1단계로 강제 리셋
+        // 뒤로가기로 대시보드에 복귀했을 때, 백그라운드에서 모달 UI를 1단계로 강제 리셋
         showStep1();
 
         if (event.originalEvent.persisted || (!history.state || !history.state.modalStep)) {
@@ -267,7 +190,7 @@
         }
     });
 
-    // [추가] 장문 연습 시작 버튼을 눌러 모달을 새로 열 때, 잔여 캐시를 무시하고 항상 1단계 구약/신약 선택 화면이 뜨도록 보장
+    // 장문 연습 시작 버튼을 눌러 모달을 새로 열 때, 잔여 캐시를 무시하고 항상 1단계 구약/신약 선택 화면이 뜨도록 보장
     $('#longPracticeModal').on('show.bs.modal', function () {
         showStep1();
     });
@@ -341,7 +264,7 @@
                         const stepsToRewind = (history.state && history.state.modalStep) ? -history.state.modalStep : -3;
                         history.go(stepsToRewind);
 
-                        // [수정] JSP EL과 충돌을 막기 위해 템플릿 리터럴을 제거하고 일반 문자열 덧셈 연산으로 쿼리스트링 생성
+                        // JSP EL과 충돌을 막기 위해 템플릿 리터럴을 제거하고 일반 문자열 덧셈 연산으로 쿼리스트링 생성
                         const queryString = "?bookCodeEn=" + encodeURIComponent(bookObj.bookCodeEn) + "&chapter=" + i;
 
                         // 4. 히스토리가 완전히 백지화된 후 연습 페이지로 안전하게 이동 (150ms 대기)
