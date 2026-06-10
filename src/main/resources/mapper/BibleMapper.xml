@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bible.bible_typing.mapper.BibleMapper">
+    <insert id="insertBibleBatch">
+        INSERT INTO bible_verses (book_id, chapter, verse, content, verse_key)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bookId}, #{item.chapter}, #{item.verse}, #{item.content}, #{item.verseKey})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAllVerses">
+        DELETE FROM bible_verses
+    </delete>
+
+    <!-- 외부 클래스에서 내부 클래스를 지정할 때는 .이 아니라 $를 사용해야함!!! -->
+    <select id="findAllBookInfo" resultType="com.bible.bible_typing.dto.BibleDto$BibleInfoDto">
+        SELECT id, book_code_ko, book_code_en, book_name_ko, book_name_en, testament, book_order
+        FROM bible_info
+    </select>
+
+    <!-- 단문 연습용 20개 데이터 호출 -->
+    <select id="getShortPractice" resultType="com.bible.bible_typing.dto.BibleDto$BibleShortPracticeDto">
+        SELECT ROW_NUMBER() over () AS row_num
+            , temp.*
+        FROM (SELECT b.book_name_ko
+                   , b.book_code_ko
+                   , a.chapter
+                   , a.verse
+                   , a.content
+              FROM bible_verses a
+                       JOIN bible_info b ON a.book_id = b.id
+              WHERE b.testament IN ('OLD', 'NEW')
+              ORDER BY rand()
+                  LIMIT 20) temp
+    </select>
+
+    <!-- 단문 연습 데이터 저장 -->
+    <insert id="saveShortPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleSaveDto">
+        INSERT INTO speed_his(
+                               user_idx
+                             , practice_type
+                             , speed
+                             , accuracy
+                             , duration
+                             , use_yn
+                             , ins_idx
+                             , ins_date
+        ) VALUES (
+                        #{userIdx}
+                      , #{practiceType}
+                      , #{speed}
+                      , #{accuracy}
+                      , #{duration}
+                      , 'Y'
+                      , #{userIdx}
+                      , NOW()
+                         )
+    </insert>
+
+    <!-- 장문 연습 데이터 호출 매핑 규칙 -->
+    <resultMap id="longPracticeData" type="com.bible.bible_typing.dto.response.LongPracticeResponse">
+        <!-- 부모 데이터 -->
+        <result property="bookNameKo" column="book_name_ko" />
+        <result property="bookNameEn" column="book_name_en" />
+        <result property="testament" column="testament" />
+        <result property="chapter" column="chapter" />
+        <!-- 자식 데이터 -->
+        <collection property="verseList" javaType="java.util.List" ofType="com.bible.bible_typing.dto.response.LongPracticeResponse$VerseDetail">
+            <result property="verse" column="verse" />
+            <result property="content" column="content" />
+        </collection>
+    </resultMap>
+    <select id="getLongPractice" resultMap="longPracticeData">
+        SELECT a.book_name_ko
+             , a.book_name_en
+             , a.testament
+             , b.chapter
+             , b.verse
+             , b.content
+        FROM bible_info a
+                 INNER JOIN bible_verses b
+                            ON a.id = b.book_id
+        WHERE a.book_code_en = #{bookCodeEn}
+          AND b.chapter = #{chapter}
+          <!--  #AND b.verse = #{verse}  -->
+        ORDER BY b.verse
+    </select>
+
+    <!-- 장문 연습 데이터 저장 -->
+    <insert id="saveLongPracticeHistory" parameterType="com.bible.bible_typing.dto.BibleDto$BibleSaveDto">
+       INSERT INTO speed_his( user_idx
+                            , practice_type
+                            , book_code_ko
+                            , book_code_en
+                            , title
+                            , chapter
+                            , speed
+                            , testament
+                            , accuracy
+                            , duration
+                            , use_yn
+                            , ins_idx
+                            , ins_date
+       ) VALUES (
+                         #{userIdx}
+                       , #{practiceType}
+                       , #{bookCodeKo}
+                       , #{bookCodeEn}
+                       , #{title}
+                       , #{chapter}
+                       , #{speed}
+                       , #{testament}
+                       , #{accuracy}
+                       , #{duration}
+                       , 'Y'
+                       , #{userIdx}
+                       , NOW()
+                       )
+    </insert>
+</mapper>

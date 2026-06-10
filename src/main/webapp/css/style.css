@@ -1,0 +1,437 @@
+/* 1. 공통 초기화 (Reset & Typography) */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', -apple-system, sans-serif; }
+body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
+a { text-decoration: none; color: inherit; transition: 0.2s; }
+a:hover { text-decoration: underline; }
+
+/* 2. 헤더 & 상단 바 (Header) */
+header, .practice-header {
+    background-color: #212529;
+    color: white;
+    padding: 0 !important;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+header > div, .practice-header > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+header .container-fluid, .practice-header .container-fluid {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: white !important;
+    line-height: 1;
+}
+
+/* 3. 타이머 바 & 스탯 (Timer Bar) */
+.timer-bar {
+    background-color: #ffffff;
+    color: #212529;
+    padding: 15px 0;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.stat-item {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #495057;
+    min-width: 140px;
+    text-align: center;
+}
+.stat-value { font-weight: 800; margin-left: 5px; }
+
+/* 4. 대시보드 전용 레이아웃 (Dashboard) */
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
+
+.card-common {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: none;
+    padding: 40px;
+}
+
+/* 5. 로그인 & 회원가입 전용 레이아웃 (Login & SignUp) */
+.login-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    margin: 60px auto;
+    width: 400px;
+    padding: 40px;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.input-group[style*="display: flex"] {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #495057;
+    text-align: left;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"],
+.input-group input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #0d6efd;
+}
+
+/* 6. 버튼 스타일 (Buttons) */
+.btn-main {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+.btn-main:hover { background-color: #0b5ed7; }
+
+.btn-sub {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-start {
+    background-color: #ffffff;
+    color: #0d6efd;
+    border: 2px solid #0d6efd;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+.btn-start:hover {
+    background-color: #0d6efd;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
+    text-decoration: none !important; /* 밑줄 방지 속성 통합 */
+}
+
+/* 7. 모달 전용 스타일 */
+.modal-content { border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+
+/* 모달 헤더 3단 정렬용 */
+.modal-header-custom {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 1rem 1.25rem !important;
+    background-color: #212529 !important;
+}
+
+.modal-header-side {
+    width: 80px; /* 좌우 공간을 동일하게 확보하여 제목이 정가운데 오도록 함 */
+    flex-shrink: 0;
+}
+
+.modal-title-center {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 !important;
+    font-weight: 700;
+}
+
+/* 헤더 내 뒤로가기 버튼 스타일 */
+#headerBackBtn {
+    display: none; /* 기본 숨김, JS에서 제어 */
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    color: #dee2e6;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+
+#headerBackBtn:hover {
+    color: #ffffff;
+}
+
+/* [중요] 뒤로가기 아이콘 크기 절대 고정 */
+#headerBackBtn svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 3px;
+    display: block;
+}
+
+/* 대시보드 구약/신약 선택 버튼 통합 디자인 */
+.testament-btn {
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background-color: #ffffff;
+    border: 2px solid #e9ecef !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+.testament-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    border-color: #0d6efd !important;
+}
+
+.old-testament-btn { background-color: #fff5f5; color: #c92a2a; border-color: #ffc9c9; }
+.old-testament-btn:hover { background-color: #ffe3e3; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(201, 42, 42, 0.15); }
+
+.new-testament-btn { background-color: #f4fce3; color: #2b8a3e; border-color: #d8f5a2; }
+.new-testament-btn:hover { background-color: #ebf7d4; transform: translateY(-5px); box-shadow: 0 8px 20px rgba(43, 138, 62, 0.15); }
+
+/* 모달 현대적 그리드 시스템 통합 */
+.modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    padding: 5px 0;
+}
+
+.modern-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 14px 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    user-select: none;
+}
+
+.modern-btn:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
+}
+
+.chapter-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 12px;
+    padding: 5px 0;
+}
+
+.chapter-btn {
+    background-color: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 14px 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #343a40;
+    transition: all 0.2s ease;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.chapter-btn:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+    transform: scale(1.08);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
+}
+
+/* 성경 선택 단계적 가이드 헤더 */
+.step-header {
+    background-color: #f8f9fa;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border-left: 4px solid #0d6efd;
+    font-size: 1.1rem;
+    color: #212529;
+    margin-bottom: 20px;
+}
+
+.bible-grid, .chapter-grid {
+    display: grid;
+    gap: 8px;
+    padding: 10px 0;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-item {
+    padding: 10px 4px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    border: 1px solid transparent;
+}
+
+.old-theme .grid-item { background-color: #fff5f5; color: #c92a2a; border-color: #ffc9c9; }
+.old-theme .grid-item:hover { background-color: #c92a2a; color: #fff; border-color: #c92a2a; transform: translateY(-2px); }
+
+.new-theme .grid-item { background-color: #f4fce3; color: #2b8a3e; border-color: #d8f5a2; }
+.new-theme .grid-item:hover { background-color: #2b8a3e; color: #fff; border-color: #2b8a3e; transform: translateY(-2px); }
+
+/* 8. 연습 페이지 레이아웃 공통 */
+.short-practice-wrapper {
+    max-width: 800px;
+    margin: 50px auto 80px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* 9. 결과창 모달 커스텀 스타일 (단문/장문 연습 결과창) */
+#resultModalOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#resultModalOverlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.result-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#resultModalOverlay.show .result-card {
+    transform: translateY(0);
+}
+
+/* 네온 프로그레스 바 커스텀 */
+.neon-bar-container {
+    background: #1e1e1e;
+    border-radius: 30px;
+    height: 24px;
+    padding: 3px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.7), 0 1px 1px rgba(255,255,255,0.2);
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+}
+.neon-bar {
+    height: 100%;
+    border-radius: 20px;
+    width: 0%;
+    transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+    background-size: 1.5rem 1.5rem;
+    background-image: linear-gradient(
+            45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%,
+            rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent
+    );
+    animation: stripe-slide 1s linear infinite;
+}
+@keyframes stripe-slide { from { background-position: 1.5rem 0; } to { background-position: 0 0; } }
+
+.neon-green { background-color: #0be881; box-shadow: 0 0 12px #0be881; }
+.neon-silver { background-color: #d2dae2; box-shadow: 0 0 12px #d2dae2; }
+.neon-orange { background-color: #ff9f43; box-shadow: 0 0 12px #ff9f43; }
+
+.stat-label-group { display: flex; justify-content: space-between; margin-bottom: 8px; padding: 0 5px; }
+.stat-title { font-weight: 700; color: #495057; font-size: 0.95rem; }
+.stat-score { font-weight: 900; font-size: 1.1rem; }
