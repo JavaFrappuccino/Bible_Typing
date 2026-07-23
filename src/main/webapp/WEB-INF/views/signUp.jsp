@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/theme.js"></script>
 </head>
 <script>
     $(document).ready(function() {
@@ -126,9 +127,14 @@
 </script>
 <body>
     <header>
-        <div style="width: 80%; margin: 0 auto;" class="navbar-brand-group">
-            <img class="logo-img" src="/images/bible3.png"/>
-            <span class="logo-text">BibleTyping</span>
+        <div style="width: 100%; padding: 0 1.5rem;" class="d-flex justify-content-between align-items-center">
+            <div class="navbar-brand-group">
+                <img class="logo-img" src="/images/bible3.png"/>
+                <span class="logo-text">BibleTyping</span>
+            </div>
+            <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 변경">
+                🌙 모드
+            </button>
         </div>
     </header>
 

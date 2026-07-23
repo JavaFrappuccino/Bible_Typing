@@ -15,6 +15,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
+    <script src="/js/theme.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,10 @@
         </div>
 
         <c:if test="${not empty sessionScope.loggedInUser}">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="theme-toggle-btn me-2" onclick="toggleTheme()" aria-label="테마 변경">
+                    🌙 모드
+                </button>
                 <span class="me-3 text-white fw-bold small">${sessionScope.loggedInUser.userNic}님 환영합니다!</span>
                 <a href="/logout" class="btn btn-light btn-sm fw-bold text-dark" style="border-radius: 20px; padding: 4px 12px; font-size: 0.8rem;">로그아웃</a>
             </div>

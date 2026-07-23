@@ -106,6 +106,7 @@
             display: block;
         }
     </style>
+    <script src="/js/theme.js"></script>
 </head>
 <body>
 
@@ -116,7 +117,10 @@
             <span class="logo-text fs-4 fw-bold">BibleTyping - 단문 연습</span>
         </div>
         <c:if test="${not empty sessionScope.loggedInUser}">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="theme-toggle-btn me-2" onclick="toggleTheme()" aria-label="테마 변경">
+                    🌙 모드
+                </button>
                 <span class="me-3 text-white fw-bold">${sessionScope.loggedInUser.userNic}님</span>
                 <a href="/mainPage" class="btn btn-light btn-sm fw-bold text-dark" style="border-radius: 20px; padding: 5px 15px;">그만하기</a>
             </div>

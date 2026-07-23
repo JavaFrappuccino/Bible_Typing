@@ -11,15 +11,15 @@
     font-weight: 600;
     line-height: 1.6;
     min-height: 160px;
-    color: #ced4da;
+    color: var(--sub-text);
     white-space: pre-wrap;
     word-break: keep-all;
     padding: 40px 20px;
     border-radius: 15px;
-    background-color: #f8f9fa;
-    border: 2px dashed #dee2e6;
+    background-color: var(--display-bg);
+    border: 2px dashed var(--display-border);
     user-select: none;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
 }
 
 /* --- 결과창 모달 커스텀 스타일 --- */
@@ -43,12 +43,14 @@
 }
 
 .result-card {
-    background: #ffffff;
+    background: var(--card-bg);
+    color: var(--text-color);
     border-radius: 20px;
     padding: 40px;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 15px 35px var(--shadow-color);
     transform: translateY(20px);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
