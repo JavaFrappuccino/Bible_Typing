@@ -17,7 +17,22 @@ public class SpeedHisService {
 
         SpeedHisDashboardResponse speedHis = speedHisMapper.getSpeedHisDashboardById(userIdx);
 
-        int rawSecond = Integer.parseInt(speedHis.getTotalDuration());
+        if (speedHis == null) {
+            return SpeedHisDashboardResponse.builder()
+                    .avgAccuracy(0)
+                    .totalDuration("0초")
+                    .sevenDayAvgSpeed(0)
+                    .build();
+        }
+
+        int rawSecond = 0;
+        if (speedHis.getTotalDuration() != null && !speedHis.getTotalDuration().trim().isEmpty()) {
+            try {
+                rawSecond = Integer.parseInt(speedHis.getTotalDuration().trim());
+            } catch (NumberFormatException e) {
+                rawSecond = 0;
+            }
+        }
 
         int hours = rawSecond / 3600;
         int minutes = rawSecond % 3600 / 60;

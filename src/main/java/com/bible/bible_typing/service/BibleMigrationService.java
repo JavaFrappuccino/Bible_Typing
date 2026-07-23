@@ -37,6 +37,14 @@ public class BibleMigrationService implements ApplicationListener<ApplicationRea
   }
 
   public void migrate() throws Exception {
+    // bookCodeToIdMap이 비어있으면 DB에서 다시 로드
+    if (this.bookCodeToIdMap == null || this.bookCodeToIdMap.isEmpty()) {
+      List<BibleDto.BibleInfoDto> allBooks = bibleMapper.findAllBookInfo();
+      this.bookCodeToIdMap =
+          allBooks.stream()
+              .collect(Collectors.toMap(BibleDto.BibleInfoDto::getBookCodeKo, BibleDto.BibleInfoDto::getId));
+    }
+
     // 1. 테이블 비우기
     bibleMapper.deleteAllVerses();
 
