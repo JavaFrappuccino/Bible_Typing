@@ -18,9 +18,11 @@ function updateThemeToggleIcons(theme) {
     btns.forEach(btn => {
         if (theme === 'dark') {
             btn.classList.add('dark');
+            btn.innerHTML = '☀️ 라이트 모드';
             btn.setAttribute('title', '라이트 모드로 변경');
         } else {
             btn.classList.remove('dark');
+            btn.innerHTML = '🌙 다크 모드';
             btn.setAttribute('title', '다크 모드로 변경');
         }
     });

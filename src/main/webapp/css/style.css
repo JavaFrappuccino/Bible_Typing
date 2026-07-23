@@ -529,3 +529,113 @@ header .container-fluid, .practice-header .container-fluid {
 .stat-label-group { display: flex; justify-content: space-between; margin-bottom: 8px; padding: 0 5px; }
 .stat-title { font-weight: 700; color: #495057; font-size: 0.95rem; }
 .stat-score { font-weight: 900; font-size: 1.1rem; }
+
+/* =========================================================
+   다크 모드 전용 텍스트/카드/모달/입력창 스타일 강제 덮어쓰기
+   ========================================================= */
+[data-theme="dark"] .text-dark {
+    color: #f8f9fa !important;
+}
+
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .text-secondary {
+    color: #adb5bd !important;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+    color: #f8f9fa !important;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] label {
+    color: #e9ecef;
+}
+
+[data-theme="dark"] .card-common,
+[data-theme="dark"] .login-card,
+[data-theme="dark"] .result-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .bg-light,
+[data-theme="dark"] .btn-light {
+    background-color: #2b3035 !important;
+    color: #f8f9fa !important;
+    border-color: #495057 !important;
+}
+
+[data-theme="dark"] .timer-bar {
+    background-color: var(--timer-bar-bg) !important;
+    border-color: var(--timer-bar-border) !important;
+    color: var(--timer-bar-text) !important;
+}
+
+[data-theme="dark"] .stat-item,
+[data-theme="dark"] .stat-title {
+    color: #ced4da !important;
+}
+
+[data-theme="dark"] .modern-btn,
+[data-theme="dark"] .chapter-btn {
+    background-color: var(--modern-btn-bg) !important;
+    border-color: var(--modern-btn-border) !important;
+    color: var(--modern-btn-text) !important;
+}
+
+[data-theme="dark"] .testament-btn {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .old-testament-btn {
+    background-color: #3b1b1b !important;
+    color: #ff8787 !important;
+    border-color: #822121 !important;
+}
+
+[data-theme="dark"] .new-testament-btn {
+    background-color: #1b3320 !important;
+    color: #8ce99a !important;
+    border-color: #2b8a3e !important;
+}
+
+[data-theme="dark"] .step-header {
+    background-color: var(--step-header-bg) !important;
+    color: var(--step-header-text) !important;
+}
+
+[data-theme="dark"] .input-group input {
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border-color: var(--input-border) !important;
+}
+
+[data-theme="dark"] .btn-start {
+    background-color: var(--btn-start-bg) !important;
+    color: var(--btn-start-text) !important;
+    border-color: var(--btn-start-text) !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--modal-bg) !important;
+    color: var(--modal-text) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+[data-theme="dark"] #fakeDisplay {
+    background-color: var(--display-bg) !important;
+    border-color: var(--display-border) !important;
+    color: #adb5bd !important;
+}
+
+[data-theme="dark"] .progress {
+    background-color: #2b3035 !important;
+}
